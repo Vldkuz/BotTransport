@@ -28,13 +28,12 @@ public class API {
     }
 
     public void getListStation() throws Exception {
-        final String sectionStations = "/copyright/?";
+        final String sectionStations = "/stations_list/?";
         String request = getURL(sectionStations);
         URL objectUrl = new URL(request);
         HttpURLConnection urlCon = (HttpURLConnection) objectUrl.openConnection();
         urlCon.setRequestMethod("GET");
         urlCon.setRequestProperty("Authorization", APIKey);
-        urlCon.setReadTimeout(1000000000);
 
         short statusCode = (short) urlCon.getResponseCode();
 
