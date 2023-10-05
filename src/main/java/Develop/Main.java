@@ -5,6 +5,24 @@ import java.io.PrintStream;
 
 public class Main {
 
+    public static void help(){
+        System.out.println("the help code");
+    }
+
+    public static void exit(){
+        System.out.println("the exit. God buy)");
+        System.exit(0);
+    }
+
+    public static void failWork(){
+        try {
+            PrintStream OutFile = new PrintStream("1.txt");
+            OutFile.println("text");
+            System.out.println("good write");
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
     public static void main(String[] args) {
         System.out.println("//приветствие");
         Scanner UsersData = new Scanner(System.in);
@@ -12,23 +30,17 @@ public class Main {
 
         while (true) {
             switch (UserString) {
-                case "-help":   //help
+                case "-help":       //help
                 case "-h":
                 case "help":
                 case "h":
-                    System.out.println("the help code");
+                    help();
                     break;
-                case "-exit": //exit
-                    System.out.println("the exit. God buy)");
-                    System.exit(0);
+                case "-exit":       //exit
+                    exit();
                     break;
-                case "-F": //fail
-                    try {
-                        PrintStream OutFile = new PrintStream("1.txt");
-                        OutFile.println("text");
-                    } catch (Exception ex) {
-                        System.err.println(ex.getMessage());
-                    }
+                case "-F":          //fail
+                    failWork();
                     break;
                 default:
                     System.out.println("Not have this command. try write key(-h) or white (-exit), if you want leave");
