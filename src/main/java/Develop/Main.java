@@ -4,6 +4,7 @@ import Develop.API.API;
 import Develop.Server.Server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.PrintStream;
@@ -11,7 +12,7 @@ import java.io.PrintStream;
 public class Main {
 
     public static void main(String[] args) {
-        Server.run();
+        Server.run(System.in, System.out);
     }
 }
 //Расписание рейсов между станциями
