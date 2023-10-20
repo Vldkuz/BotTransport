@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>Develop</groupId>
-  <artifactId>ConsoleApp</artifactId>
+  <artifactId>TelegramPublicTransport</artifactId>
   <version>1.0-SNAPSHOT</version>
 
 
@@ -19,8 +19,9 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>RELEASE</version>
+      <version>5.10.0</version>
       <scope>test</scope>
+
     </dependency>
     <dependency>
       <groupId>org.telegram</groupId>
