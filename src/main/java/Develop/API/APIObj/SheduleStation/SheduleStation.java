@@ -12,78 +12,78 @@ public class SheduleStation {
 
 class Station
 {
-  String code;
-  String station_type;
-  String station_type_name;
-  String title;
-  String popular_title;
-  String short_title;
+  public String code;
+  public String station_type;
+  public String station_type_name;
+  public String title;
+  public String popular_title;
+  public String short_title;
 
-  CodesStation codes;
-  String transport_type;
+  public CodesStation codes;
+  public String transport_type;
 
-  String type;
+  public String type;
 }
 
 class CodesStation
 {
-  String yandex;
-  String esr;
+  public String yandex;
+  public String esr;
 }
 
 
 class Shedule
 {
-  String except_days;
-  String arrival;
-  Thread thread;
-  boolean is_fuzzy;
-  String days;
-  String stops;
-  String departure;
-  String terminal;
-  String platform;
+  public String except_days;
+  public String arrival;
+  public Thread thread;
+  public boolean is_fuzzy;
+  public String days;
+  public String stops;
+  public String departure;
+  public String terminal;
+  public String platform;
 }
 
 class Thread
 {
-  String uid;
-  String title;
-  String number;
-  String short_title;
-  Carrier carrier;
-  String transport_type;
+  public String uid;
+  public String title;
+  public String number;
+  public String short_title;
+  public Carrier carrier;
+  public String transport_type;
 
-  String vehicle;
-  String transport_subtype;
-  String express_type;
+  public String vehicle;
+  public String transport_subtype;
+  public String express_type;
 
 }
 
 class Carrier
 {
-  int code;
+  public int code;
 
 }
 
 class CodeCarrier
 {
-  String icao;
-  String sirena;
-  String iata;
+  public String icao;
+  public String sirena;
+  public String iata;
 }
 
 
 class SheduleDirection
 {
-  String code;
-  String title;
+  public String code;
+  public String title;
 }
 
 class Directions
 {
-  String code;
-  String title;
+  public String code;
+  public String title;
 }
 
 

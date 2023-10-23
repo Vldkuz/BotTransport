@@ -7,25 +7,25 @@ public class NearStations {
 }
 class Station
 {
-  String distance;
-  String code;
-  String station_type;
-  String station_type_name;
-  TypeChoices type_choices;
-  String title;
-  String popular_title;
-  String short_title;
-  String majority;
-  String transport_type;
-  String lat;
-  String lng;
-  String type;
+  public String distance;
+  public String code;
+  public String station_type;
+  public String station_type_name;
+  public TypeChoices type_choices;
+  public String title;
+  public String popular_title;
+  public String short_title;
+  public String majority;
+  public String transport_type;
+  public String lat;
+  public String lng;
+  public String type;
 }
 
 
 class TypeChoices
 {
-  int total;
-  int limit;
-  int offset;
+  public int total;
+  public int limit;
+  public int offset;
 }

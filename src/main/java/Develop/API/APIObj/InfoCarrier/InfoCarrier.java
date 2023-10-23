@@ -6,19 +6,19 @@ public class InfoCarrier {
 
 class Carrier
 {
-  int code;
-  String contacts;
-  String url;
-  String title;
-  String phone;
-  Codes codes;
-  String address;
-  String logo;
-  String email;
+  public int code;
+  public String contacts;
+  public String url;
+  public String title;
+  public String phone;
+  public Codes codes;
+  public String address;
+  public String logo;
+  public String email;
 }
 
 class Codes {
-  String icao;
-  String sirena;
-  String iata;
+  public String icao;
+  public String sirena;
+  public String iata;
 }

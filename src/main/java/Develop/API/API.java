@@ -12,6 +12,7 @@ import Develop.API.URL.UrlConnector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ScopedValue.Carrier;
 import java.util.ArrayList;
 
 public class API implements APIMethods {
@@ -24,7 +25,7 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getShedule(String to, String from) throws IOException {
+  public SheduleBetStation getShedule(String to, String from) throws IOException {
     request.setBranch("/search/?");
 
     ArrayList<String> params = new ArrayList<String>();
@@ -40,7 +41,7 @@ public class API implements APIMethods {
 
 
   @Override
-  public Object getShedule(String station) throws IOException {
+  public SheduleStation getShedule(String station) throws IOException {
     request.setBranch("/schedule/?");
 
     ArrayList<String> params = new ArrayList<String>();
@@ -54,7 +55,7 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getFollowList(String uid) throws IOException {
+  public FollowStations getFollowList(String uid) throws IOException {
     request.setBranch("/thread/?");
 
     ArrayList<String> params = new ArrayList<String>();
@@ -68,7 +69,7 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getNearStations(String latitude, String longitude) throws IOException {
+  public NearStations getNearStations(String latitude, String longitude) throws IOException {
     request.setBranch("/nearest_stations/?");
 
     ArrayList<String> params = new ArrayList<String>();
@@ -83,7 +84,7 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getNearCity(String latitude, String longitude) throws IOException {
+  public NearCity getNearCity(String latitude, String longitude) throws IOException {
     request.setBranch("/nearest_settlement/?");
 
     ArrayList<String> params = new ArrayList<String>();
@@ -98,7 +99,7 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getInfoCarrier(String code) throws IOException {
+  public InfoCarrier getInfoCarrier(String code) throws IOException {
       request.setBranch("/carrier/?");
 
       ArrayList<String> params = new ArrayList<String>();
@@ -112,13 +113,14 @@ public class API implements APIMethods {
   }
 
   @Override
-  public Object getAllowStationsList() throws IOException {
+  public StationList getAllowStationsList() throws IOException {
     request.setBranch("/stations_list/?");
 
     ObjectMapper objMap = new ObjectMapper();
     InputStream StreamAPI = UrlClient.getInputStream(request.getRequest());
     return objMap.readValue(StreamAPI, StationList.class);
   }
+
 }
 
 

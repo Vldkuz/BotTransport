@@ -22,6 +22,12 @@
       <version>RELEASE</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots</artifactId>
+      <version>6.8.0</version>
+    </dependency>
 
 
   </dependencies>

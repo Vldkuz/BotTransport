@@ -27,56 +27,56 @@ public class FollowStations {
 
 class Interval {
 
-  String density;
-  String end_time;
-  String begin_time;
+  public String density;
+  public String end_time;
+  public String begin_time;
 }
 
 class Stop {
 
-  String arrival;
-  String departure;
-  String duration;
-  String stop_time;
+  public String arrival;
+  public String departure;
+  public String duration;
+  public String stop_time;
 
 }
 
 class Station {
 
-  CodesStation codes;
-  String title;
-  String station_type;
-  String station_type_name;
-  String popular_title;
-  String short_title;
-  String code;
-  String type;
+  public CodesStation codes;
+  public String title;
+  public String station_type;
+  public String station_type_name;
+  public String popular_title;
+  public String short_title;
+  public String code;
+  public String type;
 }
 
 class CodesStation {
 
-  String express;
-  String yandex;
-  String esr;
+  public String express;
+  public String yandex;
+  public String esr;
 }
 
 class Carrier {
 
-  int code;
-  CodesCarriers codes;
-  String title;
+  public int code;
+  public CodesCarriers codes;
+  public String title;
 }
 
 class CodesCarriers {
 
-  String icao;
-  String sirena;
-  String iata;
+  public String icao;
+  public String sirena;
+  public String iata;
 }
 
 class TransportSubtype {
 
-  String color;
-  String code;
-  String title;
+  public String color;
+  public String code;
+  public String title;
 }

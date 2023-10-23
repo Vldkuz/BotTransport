@@ -11,154 +11,154 @@ public class SheduleBetStation {
 
 class IntervalSegments
 {
-  SegmentsFrom from;
-  Thread thread;
-  String departure_platform;
-  String stops;
-  String departure_terminal;
-  SegmentsTo to;
-  boolean has_transfers;
-  TicketsInfo tickets_info;
-  String duration;
-  String arrival_terminal;
-  String start_date;
-  String arrival_platform;
+  public SegmentsFrom from;
+  public Thread thread;
+  public String departure_platform;
+  public String stops;
+  public String departure_terminal;
+  public SegmentsTo to;
+  public boolean has_transfers;
+  public TicketsInfo tickets_info;
+  public String duration;
+  public String arrival_terminal;
+  public String start_date;
+  public String arrival_platform;
 }
 
 class Segment
 {
-  String arrival;
-  SegmentsFrom from;
-  Thread thread;
-  String departure_platform;
-  String departure;
-  String stops;
-  String departure_terminal;
-  SegmentsTo to;
-  boolean has_transfers;
-  TicketsInfo tickets_info;
-  String duration;
-  String arrival_terminal;
-  String start_date;
-  String arrival_platform;
+  public String arrival;
+  public SegmentsFrom from;
+  public Thread thread;
+  public String departure_platform;
+  public String departure;
+  public String stops;
+  public String departure_terminal;
+  public SegmentsTo to;
+  public boolean has_transfers;
+  public TicketsInfo tickets_info;
+  public String duration;
+  public String arrival_terminal;
+  public String start_date;
+  public String arrival_platform;
 }
 
 class TicketsInfo
 {
-  boolean et_marker;
-  List<Place> places;
+  public boolean et_marker;
+  public List<Place> places;
 }
 
 class Place
 {
-  String currency;
-  Price price;
-  String name;
+  public String currency;
+  public Price price;
+  public String name;
 }
 
 class Price
 {
-  int cents;
-  int whole;
+  public int cents;
+  public int whole;
 }
 
 class Thread
 {
- String uid;
- String title;
- Interval interval;
- String number;
- String short_title;
- String thread_method_link;
- Carrier carrier;
- String transport_type;
- String vehicle;
- TransportSubType transport_subtype;
- String express_type;
+  public String uid;
+  public String title;
+  public Interval interval;
+  public String number;
+  public String short_title;
+  public String thread_method_link;
+  public Carrier carrier;
+  public String transport_type;
+  public String vehicle;
+  public TransportSubType transport_subtype;
+  public String express_type;
 }
 
 class TransportSubType
 {
-  String color;
-  String code;
-  String title;
+  public String color;
+  public String code;
+  public String title;
 }
 
 class Carrier
 {
-  String code;
-  String contacts;
-  String url;
-  String logo_svg;
-  String title;
-  String phone;
-  Code codes;
-  String address;
-  String logo;
-  String email;
+  public String code;
+  public String contacts;
+  public String url;
+  public String logo_svg;
+  public String title;
+  public String phone;
+  public Code codes;
+  public String address;
+  public String logo;
+  public String email;
 }
 
 class Code
 {
-  String icao;
-  String sirena;
-  String iata;
+  public String icao;
+  public String sirena;
+  public String iata;
 }
 
 
 
 class Interval
 {
-  String density;
-  String end_time;
-  String begin_time;
+  public String density;
+  public String end_time;
+  public String begin_time;
 }
 
 class SegmentsFrom
 {
-  String code;
-  String title;
-  String station_type;
-  String station_type_name;
-  String popular_title;
-  String short_title;
-  String transport_type;
-  String type;
+  public String code;
+  public String title;
+  public String station_type;
+  public String station_type_name;
+  public String popular_title;
+  public String short_title;
+  public String transport_type;
+  public String type;
 }
 
 class SegmentsTo
 {
-  String code;
-  String title;
-  String station_type;
-  String station_type_name;
-  String popular_title;
-  String transport_type;
-  String type;
+  public String code;
+  public String title;
+  public String station_type;
+  public String station_type_name;
+  public String popular_title;
+  public String transport_type;
+  public String type;
 }
 
 
 class Search
 {
-  String date;
-  SearchTo to;
-  SearchFrom from;
+  public String date;
+  public SearchTo to;
+  public SearchFrom from;
 }
 
 class SearchFrom
 {
-  String code;
-  String type;
-  String popular_title;
-  String short_title;
-  String title;
+  public String code;
+  public String type;
+  public String popular_title;
+  public String short_title;
+  public String title;
 }
 
 class SearchTo
 {
-  String code;
-  String type;
-  String popular_title;
-  String short_title;
-  String title;
+  public String code;
+  public String type;
+  public String popular_title;
+  public String short_title;
+  public String title;
 }
