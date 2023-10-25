@@ -1,6 +1,7 @@
 package Develop;
 
 import Develop.API.API;
+import Develop.API.APIObj.StationList.StationList;
 import Develop.Server.Server;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.io.PrintStream;
 public class Main {
 
     public static void main(String[] args) {
-        Server.run();
     }
 }
 //Расписание рейсов между станциями
