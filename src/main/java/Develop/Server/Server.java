@@ -58,7 +58,7 @@ public class Server {
             SheduleStation shedule = (SheduleStation) api.getShedule(Station);
 //            shedule.station
             // Вызываем метод getShedule для получения расписания маршрутов
-
+            writer.println(shedule.date);
 
             //String to = reader.readLine();
 
@@ -66,6 +66,8 @@ public class Server {
         } catch (IOException e) {
             // Обрабатываем возможную ошибку ввода-вывода
             e.printStackTrace();
+        } catch (InterruptedException exception){
+            exception.printStackTrace();
         }
 
     }

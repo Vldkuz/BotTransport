@@ -12,6 +12,8 @@ import java.io.PrintStream;
 public class Main {
 
     public static void main(String[] args) {
+        Server server = new Server(System.in,System.out);
+        server.run();
     }
 }
 //Расписание рейсов между станциями
