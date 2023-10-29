@@ -20,7 +20,7 @@ public class APIConnector {
     }
 
     public InputStream getInputStream(String request) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(5)).build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(10)).build();
         HttpRequest httpReq = HttpRequest.newBuilder(URI.create(request)).headers("Authorization",APIKey).build();
 
         HttpResponse<InputStream> response;
@@ -30,10 +30,10 @@ public class APIConnector {
             return response.body();
         }
 
-        throw new IOException("Response Code is not OK");
+        throw new IOException("Response Code is" + response.statusCode());
     }
 
 
-    private String APIKey;
+    private final String APIKey;
 
 }

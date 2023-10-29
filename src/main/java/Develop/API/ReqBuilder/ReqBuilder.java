@@ -8,7 +8,7 @@ public class ReqBuilder {
         if (curl.length() == 0) {
             throw new RuntimeException("Указан пустой URL для запроса");
         }
-        url = curl;
+        url = new String(curl);
     }
 
     public void setBranch(String cBranch) {

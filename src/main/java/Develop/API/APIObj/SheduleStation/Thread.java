@@ -10,7 +10,7 @@ public class Thread {
     public String transport_type;
 
     public String vehicle;
-    public String transport_subtype;
+    public TransportSubtype transport_subtype;
     public String express_type;
 
 }

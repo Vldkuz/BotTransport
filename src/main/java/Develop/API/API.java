@@ -9,119 +9,175 @@ import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.APIObj.StationList.StationList;
 import Develop.API.APIObj.InfoCarrier.InfoCarrier;
 import Develop.API.ReqBuilder.ReqBuilder;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class API implements APIMethods {
-  private final APIConnector APICon;
-  private final ReqBuilder request;
 
-  public API(String APIKey, String APIUrl) {
-    APICon = new APIConnector(APIKey);
-    request = new ReqBuilder(APIUrl);
-  }
+    private final APIConnector APICon;
+    private final ReqBuilder request;
 
-  @Override
-  public SheduleBetStation getShedule(String to, String from)
-          throws IOException, InterruptedException {
-    request.setBranch("/search/?");
+    public API(String APIKey, String APIUrl) {
+        APICon = new APIConnector(APIKey);
+        request = new ReqBuilder(APIUrl);
+    }
 
-    ArrayList<String> params = new ArrayList<String>();
-    params.add("from="+ from);
-    params.add("to=" + to);
+    @Override
+    public SheduleBetStation getShedule(String to, String from, String date, String transportType,
+            String limit, String resultTimezone, String withTransfers)
+            throws IOException, InterruptedException {
+        request.setBranch("/search/?");
 
-    request.addParams(params);
+        ArrayList<String> params = new ArrayList<String>();
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, SheduleBetStation.class);
-  }
+        params.add("from=" + from);
+        params.add("to=" + to);
+
+        if (!date.isEmpty()) {
+            params.add("date=" + date);
+        }
+        if (!transportType.isEmpty()) {
+            params.add("transport_types=" + transportType);
+        }
+        if (!limit.isEmpty()) {
+            params.add("limit=" + limit);
+        }
+        if (!resultTimezone.isEmpty()) {
+            params.add("result_timezone=" + resultTimezone);
+        }
+        if (!withTransfers.isEmpty()) {
+            params.add("transfers=" + withTransfers);
+        }
+
+        request.addParams(params);
+
+        return (SheduleBetStation) getObjMapper(request, SheduleBetStation.class);
+    }
 
 
-  @Override
-  public SheduleStation getShedule(String station) throws IOException, InterruptedException {
-    request.setBranch("/schedule/?");
+    @Override
+    public SheduleStation getShedule(String station, String date, String transportType,
+            String direction, String event, String resultTimezone)
+            throws IOException, InterruptedException {
+        request.setBranch("/schedule/?");
 
-    ArrayList<String> params = new ArrayList<String>();
-    params.add("station=" + station);
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("station=" + station);
 
-    request.addParams(params);
+        if (!date.isEmpty()) {
+            params.add("date=" + date);
+        }
+        if (!transportType.isEmpty()) {
+            params.add("transport_types=" + transportType);
+        }
+        if (!direction.isEmpty()) {
+            params.add("direction=" + direction);
+        }
+        if (!event.isEmpty()) {
+            params.add("event=" + event);
+        }
+        if (!resultTimezone.isEmpty()) {
+            params.add("result_timezone=" + resultTimezone);
+        }
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, SheduleStation.class);
-  }
+        request.addParams(params);
 
-  @Override
-  public FollowStations getFollowList(String uid) throws IOException, InterruptedException {
-    request.setBranch("/thread/?");
+        return (SheduleStation) getObjMapper(request, SheduleStation.class);
+    }
 
-    ArrayList<String> params = new ArrayList<String>();
-    params.add("uid=" + uid);
+    @Override
+    public FollowStations getFollowList(String uid, String from, String to, String date)
+            throws IOException, InterruptedException {
+        request.setBranch("/thread/?");
 
-    request.addParams(params);
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("uid=" + uid);
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, FollowStations.class);
-  }
+        if (!from.isEmpty()) {
+            params.add("from=" + from);
+        }
+        if (!to.isEmpty()) {
+            params.add("to=" + to);
+        }
+        if (!date.isEmpty()) {
+            params.add("date=" + date);
+        }
 
-  @Override
-  public NearStations getNearStations(String latitude, String longitude)
-          throws IOException, InterruptedException {
-    request.setBranch("/nearest_stations/?");
+        request.addParams(params);
 
-    ArrayList<String> params = new ArrayList<String>();
-    params.add("lat=" + latitude);
-    params.add("lng=" + longitude);
+        return (FollowStations) getObjMapper(request, FollowStations.class);
+    }
 
-    request.addParams(params);
+    @Override
+    public NearStations getNearStations(String latitude, String longitude, String distance,
+            String stationTypes, String transportTypes, String limit)
+            throws IOException, InterruptedException {
+        request.setBranch("/nearest_stations/?");
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, NearStations.class);
-  }
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("lat=" + latitude);
+        params.add("lng=" + longitude);
+        params.add("distance=" + distance);
 
-  @Override
-  public NearCity getNearCity(String latitude, String longitude)
-          throws IOException, InterruptedException {
-    request.setBranch("/nearest_settlement/?");
+        if (!stationTypes.isEmpty()) {
+            params.add("station_types=" + stationTypes);
+        }
+        if (!transportTypes.isEmpty()) {
+            params.add("transport_types=" + transportTypes);
+        }
+        if (!limit.isEmpty()) {
+            params.add("limit=" + limit);
+        }
 
-    ArrayList<String> params = new ArrayList<String>();
-    params.add("lat=" + latitude);
-    params.add("lng=" + longitude);
+        request.addParams(params);
 
-    request.addParams(params);
+        return (NearStations) getObjMapper(request, NearStations.class);
+    }
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, NearCity.class);
-  }
+    @Override
+    public NearCity getNearCity(String latitude, String longitude, String distance)
+            throws IOException, InterruptedException {
+        request.setBranch("/nearest_settlement/?");
 
-  @Override
-  public InfoCarrier getInfoCarrier(String code) throws IOException, InterruptedException {
-      request.setBranch("/carrier/?");
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("lat=" + latitude);
+        params.add("lng=" + longitude);
 
-      ArrayList<String> params = new ArrayList<String>();
-      params.add("code=" + code);
+        if (!distance.isEmpty())
+            params.add("distance=" + distance);
 
-      request.addParams(params);
+        request.addParams(params);
 
-      ObjectMapper objMap = new ObjectMapper();
-      InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-      return objMap.readValue(StreamAPI, InfoCarrier.class);
-  }
+        return (NearCity) getObjMapper(request, NearCity.class);
+    }
 
-  @Override
-  public StationList getAllowStationsList() throws IOException, InterruptedException {
-    request.setBranch("/stations_list/?");
+    @Override
+    public InfoCarrier getInfoCarrier(String code) throws IOException, InterruptedException {
+        request.setBranch("/carrier/?");
 
-    ObjectMapper objMap = new ObjectMapper();
-    InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-    return objMap.readValue(StreamAPI, StationList.class);
-  }
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("code=" + code);
+
+        request.addParams(params);
+
+        return (InfoCarrier) getObjMapper(request, InfoCarrier.class);
+    }
+
+    @Override
+    public StationList getAllowStationsList() throws IOException, InterruptedException {
+        request.setBranch("/stations_list/?");
+        return (StationList) getObjMapper(request, StationList.class);
+    }
+
+    private Object getObjMapper(ReqBuilder request, Class templateClass) throws IOException, InterruptedException {
+        ObjectMapper objMap = new ObjectMapper();
+        InputStream StreamAPI = APICon.getInputStream(request.getRequest());
+        objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objMap.readValue(StreamAPI, templateClass);
+    }
 
 }
 
