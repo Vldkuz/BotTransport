@@ -10,14 +10,11 @@ import Develop.API.APIObj.StationList.StationList;
 import java.io.IOException;
 
 public interface APIMethods {
-    public SheduleBetStation getShedule(String to, String from)
-            throws IOException, InterruptedException;
-    public SheduleStation getShedule(String station) throws IOException, InterruptedException;
-    public FollowStations getFollowList(String uid) throws IOException, InterruptedException;
-    public NearStations getNearStations(String latitude,String longitude)
-            throws IOException, InterruptedException;
-    public NearCity getNearCity(String latitude,String longitude)
-            throws IOException, InterruptedException;
-    public InfoCarrier getInfoCarrier(String code) throws IOException, InterruptedException;
-    public StationList getAllowStationsList() throws IOException, InterruptedException;
+    SheduleBetStation getShedule(String to, String from, String date, String transportType, String limit, String resultTimezone, String withTransfers) throws IOException, InterruptedException;
+    SheduleStation getShedule(String station, String date, String transportType, String direction, String event, String resultTimezone) throws IOException, InterruptedException;
+    FollowStations getFollowList(String uid, String from, String to, String date) throws IOException, InterruptedException;
+    NearStations getNearStations(String latitude, String longitude, String distance, String stationTypes, String transportTypes, String limit) throws IOException, InterruptedException;
+    NearCity getNearCity(String latitude, String longitude, String distance) throws IOException, InterruptedException;
+    InfoCarrier getInfoCarrier(String code) throws IOException, InterruptedException;
+    StationList getAllowStationsList() throws IOException, InterruptedException;
 }
