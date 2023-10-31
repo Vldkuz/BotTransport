@@ -1,6 +1,5 @@
 package Develop.API;
 
-import Develop.API.APIConnector.APIConnector;
 import Develop.API.APIObj.FollowStations.FollowStations;
 import Develop.API.APIObj.NearCity.NearCity;
 import Develop.API.APIObj.NearStations.NearStations;
@@ -8,7 +7,6 @@ import Develop.API.APIObj.SheduleBetStation.SheduleBetStation;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.APIObj.StationList.StationList;
 import Develop.API.APIObj.InfoCarrier.InfoCarrier;
-import Develop.API.ReqBuilder.ReqBuilder;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -26,30 +24,12 @@ public class API implements APIMethods {
     }
 
     @Override
-    public SheduleBetStation getShedule(String to, String from, String date, String transportType,
-            String limit, String resultTimezone, String withTransfers)
+    public SheduleBetStation getShedule(ParamBuilder params)
             throws IOException, InterruptedException {
         request.setBranch("/search/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-
-        params.add("from=" + from);
-        params.add("to=" + to);
-
-        if (!date.isEmpty()) {
-            params.add("date=" + date);
-        }
-        if (!transportType.isEmpty()) {
-            params.add("transport_types=" + transportType);
-        }
-        if (!limit.isEmpty()) {
-            params.add("limit=" + limit);
-        }
-        if (!resultTimezone.isEmpty()) {
-            params.add("result_timezone=" + resultTimezone);
-        }
-        if (!withTransfers.isEmpty()) {
-            params.add("transfers=" + withTransfers);
+        if (params.to.isEmpty() || params.from.isEmpty()) {
+            throw new RuntimeException("Не указан параметр to или from");
         }
 
         request.addParams(params);
@@ -59,28 +39,12 @@ public class API implements APIMethods {
 
 
     @Override
-    public SheduleStation getShedule(String station, String date, String transportType,
-            String direction, String event, String resultTimezone)
+    public SheduleStation getSheduleStation(ParamBuilder params)
             throws IOException, InterruptedException {
         request.setBranch("/schedule/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add("station=" + station);
-
-        if (!date.isEmpty()) {
-            params.add("date=" + date);
-        }
-        if (!transportType.isEmpty()) {
-            params.add("transport_types=" + transportType);
-        }
-        if (!direction.isEmpty()) {
-            params.add("direction=" + direction);
-        }
-        if (!event.isEmpty()) {
-            params.add("event=" + event);
-        }
-        if (!resultTimezone.isEmpty()) {
-            params.add("result_timezone=" + resultTimezone);
+        if (params.station.isEmpty()) {
+            throw new RuntimeException("Не указан параметр station");
         }
 
         request.addParams(params);
@@ -89,47 +53,25 @@ public class API implements APIMethods {
     }
 
     @Override
-    public FollowStations getFollowList(String uid, String from, String to, String date)
+    public FollowStations getFollowList(ParamBuilder params)
             throws IOException, InterruptedException {
         request.setBranch("/thread/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add("uid=" + uid);
-
-        if (!from.isEmpty()) {
-            params.add("from=" + from);
-        }
-        if (!to.isEmpty()) {
-            params.add("to=" + to);
-        }
-        if (!date.isEmpty()) {
-            params.add("date=" + date);
+        if (params.uid.isEmpty()) {
+            throw new RuntimeException("Не указан параметр uid");
         }
 
         request.addParams(params);
-
         return (FollowStations) getObjMapper(request, FollowStations.class);
     }
 
     @Override
-    public NearStations getNearStations(String latitude, String longitude, String distance,
-            String stationTypes, String transportTypes, String limit)
+    public NearStations getNearStations(ParamBuilder params)
             throws IOException, InterruptedException {
         request.setBranch("/nearest_stations/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add("lat=" + latitude);
-        params.add("lng=" + longitude);
-        params.add("distance=" + distance);
-
-        if (!stationTypes.isEmpty()) {
-            params.add("station_types=" + stationTypes);
-        }
-        if (!transportTypes.isEmpty()) {
-            params.add("transport_types=" + transportTypes);
-        }
-        if (!limit.isEmpty()) {
-            params.add("limit=" + limit);
+        if (params.latitude.isEmpty() || params.longtitude.isEmpty() || params.distance.isEmpty()) {
+            throw new RuntimeException("Не указан параметр lat или lng или distance");
         }
 
         request.addParams(params);
@@ -138,16 +80,13 @@ public class API implements APIMethods {
     }
 
     @Override
-    public NearCity getNearCity(String latitude, String longitude, String distance)
+    public NearCity getNearCity(ParamBuilder params)
             throws IOException, InterruptedException {
         request.setBranch("/nearest_settlement/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add("lat=" + latitude);
-        params.add("lng=" + longitude);
-
-        if (!distance.isEmpty())
-            params.add("distance=" + distance);
+        if (params.longtitude.isEmpty() || params.latitude.isEmpty()) {
+            throw new RuntimeException("Не указан параметр lat или lng");
+        }
 
         request.addParams(params);
 
@@ -155,11 +94,13 @@ public class API implements APIMethods {
     }
 
     @Override
-    public InfoCarrier getInfoCarrier(String code) throws IOException, InterruptedException {
+    public InfoCarrier getInfoCarrier(ParamBuilder params)
+            throws IOException, InterruptedException {
         request.setBranch("/carrier/?");
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add("code=" + code);
+        if (params.code.isEmpty()) {
+            throw new RuntimeException("Не указан параметр code");
+        }
 
         request.addParams(params);
 
@@ -172,7 +113,8 @@ public class API implements APIMethods {
         return (StationList) getObjMapper(request, StationList.class);
     }
 
-    private Object getObjMapper(ReqBuilder request, Class templateClass) throws IOException, InterruptedException {
+    private Object getObjMapper(ReqBuilder request, Class templateClass)
+            throws IOException, InterruptedException {
         ObjectMapper objMap = new ObjectMapper();
         InputStream StreamAPI = APICon.getInputStream(request.getRequest());
         objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
