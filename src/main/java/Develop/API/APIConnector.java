@@ -1,4 +1,4 @@
-package Develop.API.APIConnector;
+package Develop.API;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class APIConnector {
             return response.body();
         }
 
-        throw new IOException("Response Code is" + response.statusCode());
+        throw new IOException("Response Code is " + response.statusCode());
     }
 
 

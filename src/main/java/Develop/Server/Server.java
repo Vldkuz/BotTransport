@@ -3,6 +3,7 @@ package Develop.Server;
 import Develop.API.API;
 import Develop.API.APIObj.SheduleBetStation.SheduleBetStation;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
+import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,7 +42,11 @@ public class Server {
 
         try {
             String Station = reader.readLine();
-            SheduleStation shedule =  api.getShedule(Station,"","","","","");
+
+            ParamBuilder param = new ParamBuilder();
+            param.station = Station;
+
+            SheduleStation shedule =  api.getSheduleStation(param);
             // Вызываем метод getShedule для получения расписания маршрутов
             writer.println(shedule.schedule.get(0).except_days);
         } catch (IOException e) {
@@ -130,29 +135,4 @@ public class Server {
     }
 }
 
-/*
-private static void fs() {
-    System.out.println("Flight schedule between stations");
-}
-
-private static void bs() {
-    System.out.println("Flight schedule by station");
-}
-
-private static void los() {
-    System.out.println("List of train stations");
-}
-
-private static void ns() {
-    System.out.println("List of nearest stations");
-}
-
-private static void nc() {
-    System.out.println("Nearest city");
-}
-
-private static void ci() {
-    System.out.println("Information about the carrier");
-}
- */
 
