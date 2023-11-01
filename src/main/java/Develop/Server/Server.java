@@ -37,9 +37,9 @@ public class Server {
         }
     }
 
-    private void showScheduleByStation(/*PrintWriter writer, BufferedReader reader*/) /*throws IOException*/ {
-        writer.println("Schedule by station");
-
+    private void showScheduleByStation() {
+        writer.println("Schedule by station\n");
+        //s9600213
         try {
             String Station = reader.readLine();
 
@@ -48,15 +48,26 @@ public class Server {
 
             SheduleStation shedule =  api.getSheduleStation(param);
             // Вызываем метод getShedule для получения расписания маршрутов
-            writer.println(shedule.schedule.get(0).except_days);
+
+            writer.println("тип станции:\t" + shedule.station.station_type_name);
+            writer.println("название станции:\t" + shedule.station.title);
+            writer.println("тип транспорта:\t" + shedule.station.transport_type+"\n");
+            for (int i = 0; i < shedule.schedule.size(); ++i) {
+                writer.println("рейс\t" + shedule.schedule.get(i).thread.title);
+                writer.println("даты отъезда:\t" + shedule.schedule.get(i).days);
+                writer.println("время отправления:\t" + shedule.schedule.get(i).days);
+                writer.println("\n\n");
+            }
+
         } catch (IOException e) {
             // Обрабатываем возможную ошибку ввода-вывода
             e.printStackTrace();
-        } catch (InterruptedException exception){
+        } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
 
     }
+
 
     public void run() {
         writer.println("//приветствие");
@@ -108,6 +119,7 @@ public class Server {
         writer.println("the help code");
 
     }
+
     private static void showScheduleBetStation(PrintWriter writer) {
         writer.println("Schedule between stations");
 

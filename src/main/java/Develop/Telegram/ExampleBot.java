@@ -10,6 +10,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class ExampleBot {
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramBot());
+        telegramBotsApi.registerBot(
+                new TelegramBot());
     }
 }
