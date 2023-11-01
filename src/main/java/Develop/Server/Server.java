@@ -42,7 +42,7 @@ public class Server {
         //s9600213
         try {
             String Station = reader.readLine();
-
+          
             ParamBuilder param = new ParamBuilder();
             param.station = Station;
 
@@ -67,8 +67,6 @@ public class Server {
         }
 
     }
-
-
     public void run() {
         writer.println("//приветствие");
         writer.flush(); // Очистка буфера и запись данных
@@ -119,7 +117,6 @@ public class Server {
         writer.println("the help code");
 
     }
-
     private static void showScheduleBetStation(PrintWriter writer) {
         writer.println("Schedule between stations");
 
