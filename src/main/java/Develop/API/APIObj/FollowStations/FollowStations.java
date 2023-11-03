@@ -4,6 +4,7 @@ import java.util.List;
 
 public class FollowStations {
 
+
   public String except_days;
   public String arrival_date;
   public String from;

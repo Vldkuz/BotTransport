@@ -34,7 +34,7 @@ public class API implements APIMethods {
 
         request.addParams(params);
 
-        return (SheduleBetStation) getObjMapper(request, SheduleBetStation.class);
+        return getObjMapper(request, SheduleBetStation.class);
     }
 
 
@@ -113,7 +113,7 @@ public class API implements APIMethods {
         return (StationList) getObjMapper(request, StationList.class);
     }
 
-    private Object getObjMapper(ReqBuilder request, Class templateClass)
+    private <T> T getObjMapper(ReqBuilder request, Class<T> templateClass)
             throws IOException, InterruptedException {
         ObjectMapper objMap = new ObjectMapper();
         InputStream StreamAPI = APICon.getInputStream(request.getRequest());
