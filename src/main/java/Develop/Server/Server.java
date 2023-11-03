@@ -1,23 +1,28 @@
 package Develop.Server;
 
 import Develop.API.API;
+import Develop.API.APIObj.SheduleBetStation.SheduleBetStation;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import Develop.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
+import java.io.File;
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.*;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 
 public class Server {
 
-    private final API api;
-    private final BufferedReader reader;
-    private final PrintWriter writer;
+    private API api;
+    private BufferedReader reader;
+    private PrintWriter writer;
 
     public Server(InputStream in, OutputStream out) {   // constructor
         // входной вых поток.
@@ -25,43 +30,32 @@ public class Server {
         reader = new BufferedReader(new InputStreamReader(in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
         try {
-            KeyManager KeyAPI = new KeyManager("src/resources/APISheduleKey.json");
-            String keyValue = KeyAPI.getKey("Key");
+
+//            KeyManager keyAPI = new KeyManager("src/resources/APISheduleKey.json");
+
+//            InputStream inputStream = new FileInputStream("src/resources/APISheduleKey.json");
+
+            //InputStream inputStream = KeyManager.class.getResourceAsStream("/APISheduleKey.json");
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
+            KeyManager keyAPI = objectMapper.readValue(inputStream,KeyManager.class);
+
+//            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/APISheduleKey.json");
+//            KeyManager keyAPI = new KeyManager(inputStream);
+
+
+
+            /*File file = new File("src/resources/APISheduleKey.json");
+            InputStream inputStream = new FileInputStream(file);
+            KeyManager keyAPI = new KeyManager(inputStream);*/
+
+
+            String keyValue = keyAPI.getKey();
+
             api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static void help(PrintWriter writer) {
-        writer.println("the help code");
-
-    }
-
-    private static void showScheduleBetStation(PrintWriter writer) {
-        writer.println("Schedule between stations");
-
-    }
-
-    private static void showFollowStations(PrintWriter writer) {
-        writer.println("Follow stations");
-
-    }
-
-    private static void showNearStation(PrintWriter writer) {
-        writer.println("List of nearest stations");
-
-
-    }
-
-    private static void showNeartCity(PrintWriter writer) {
-        writer.println("Nearest city");
-
-    }
-
-    private static void showInfCarrier(PrintWriter writer) {
-        writer.println("Information about the carrier");
-
     }
 
     private void showScheduleByStation() {
@@ -94,7 +88,6 @@ public class Server {
         }
 
     }
-
     public void run() {
         writer.println("//приветствие");
         writer.flush(); // Очистка буфера и запись данных
@@ -132,14 +125,43 @@ public class Server {
                     showInfCarrier(writer);
                     break;
                 default:
-                    writer.println(
-                            "Not have this command. try write key(-h) or white (-exit), if you want to leave");
+                    writer.println("Not have this command. try write key(-h) or white (-exit), if you want to leave");
                     writer.flush();
                     break;
             }
             writer.flush();
 
         } while (!userString.isEmpty());
+    }
+
+    private static void help(PrintWriter writer) {
+        writer.println("the help code");
+
+    }
+    private static void showScheduleBetStation(PrintWriter writer) {
+        writer.println("Schedule between stations");
+
+    }
+
+    private static void showFollowStations(PrintWriter writer) {
+        writer.println("Follow stations");
+
+    }
+
+    private static void showNearStation(PrintWriter writer) {
+        writer.println("List of nearest stations");
+
+
+    }
+
+    private static void showNeartCity(PrintWriter writer) {
+        writer.println("Nearest city");
+
+    }
+
+    private static void showInfCarrier(PrintWriter writer) {
+        writer.println("Information about the carrier");
+
     }
 }
 
