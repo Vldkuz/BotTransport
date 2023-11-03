@@ -4,10 +4,13 @@ import Develop.API.API;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
+import Develop.Main;
 import Develop.Telegram.bot.StateObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class TGServer {
 
@@ -22,9 +25,12 @@ public class TGServer {
         this.text = text;
         this.sendMessage = sendMessage;
         try {
-            KeyManager KeyAPI = new KeyManager("src/resources/APISheduleKey.json");
-            String keyValue = KeyAPI.getKey("Key");
-            api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
+            KeyManager keyAPI = objectMapper.readValue(inputStream, KeyManager.class);
+
+            String keyValue = keyAPI.getKey();
+            this.api = new API(keyValue, "https://api.rasp.yandex.net/v3.0");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,53 +60,43 @@ public class TGServer {
         return "Information about the carrier";
     }
 
-    public void run(StateObject comand) {
-        sendMessage.setChatId(chatId);
-        if (comand.status.equals("bs")) {
-                sendMessage.setText(showScheduleByStation());
-        }
-        else {
+    public String run(String text, StateObject comand) {
+        if (comand.getStatus().equals("bs")) {
+            return (showScheduleByStation());
+        } else {
             switch (text) {
                 case "h": //help
+                    return help();
 
-                    sendMessage.setText(help());
-                    break;
+                case "bs":               //Расписание рейсов по станции
+                    comand.setStatus("bs");
+                    return ("Write code of city, please ");
+
+                case "lot":               //Список станций следования
+                    return (showFollowStations());
+
+
                 case "fs":               //Расписание рейсов между станциями
 
-                    sendMessage.setText(showScheduleBetStation());
+                    return (showScheduleBetStation());
 
-                    break;
-                case "bs":               //Расписание рейсов по станции
-//                text = update.getMessage().getText();
-//                sendMessage.setText(text);
-//                SendMessage response = new SendMessage().setChatId(update.getMessage().getChatId()).setText(responseText);
-//                sendMessage.setText(response.getText());
-                    //text = update.getMessage().getText();
-//                System.out.println(sendMessage.getText());
-                    comand.status = "bs";
-                    sendMessage.setText("Write code of city, please ");
-                    break;
-                case "lot":               //Список станций следования
 
-                    sendMessage.setText(showFollowStations());
-
-                    break;
                 case "ns":               //Список ближайших станций
 
-                    sendMessage.setText(showNearStation());
+                    return (showNearStation());
 
-                    break;
+
                 case "nc":               //Ближайший город
 
-                    sendMessage.setText(showNeartCity());
-                    break;
+                    return (showNeartCity());
+
                 case "ci":               //Информация о перевозчике
 
-                    sendMessage.setText(showInfCarrier());
-                    break;
+                    return (showInfCarrier());
+
                 default:
-                    sendMessage.setText("Not have this command. try write key(-h) or white (-exit), if you want to leave");
-                    break;
+                    return ("Not have this command. try write key(-h) or white (-exit), if you want to leave");
+
             }
         }
     }
