@@ -4,16 +4,20 @@ import Develop.API.API;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
-import Develop.Main;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class Server {
 
-    private API api;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private final API api;
+    private final BufferedReader reader;
+    private final PrintWriter writer;
 
     public Server(InputStream in, OutputStream out) {   // constructor
         // входной вых поток.
@@ -21,28 +25,8 @@ public class Server {
         reader = new BufferedReader(new InputStreamReader(in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
         try {
-
-//            KeyManager keyAPI = new KeyManager("src/resources/APISheduleKey.json");
-
-//            InputStream inputStream = new FileInputStream("src/resources/APISheduleKey.json");
-
-            //InputStream inputStream = KeyManager.class.getResourceAsStream("/APISheduleKey.json");
-            ObjectMapper objectMapper = new ObjectMapper();
-            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
-            KeyManager keyAPI = objectMapper.readValue(inputStream,KeyManager.class);
-
-//            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/APISheduleKey.json");
-//            KeyManager keyAPI = new KeyManager(inputStream);
-
-
-
-            /*File file = new File("src/resources/APISheduleKey.json");
-            InputStream inputStream = new FileInputStream(file);
-            KeyManager keyAPI = new KeyManager(inputStream);*/
-
-
-            String keyValue = keyAPI.getKey();
-
+            KeyManager KeyAPI = new KeyManager("src/resources/APISheduleKey.json");
+            String keyValue = KeyAPI.getKey("Key");
             api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -87,18 +71,18 @@ public class Server {
             String Station = reader.readLine();
 
             ParamBuilder param = new ParamBuilder();
-            param.station = Station;
+            param.setStation(Station);
 
             SheduleStation shedule = api.getSheduleStation(param);
             // Вызываем метод getShedule для получения расписания маршрутов
 
-            writer.println("тип станции:\t" + shedule.station.station_type_name);
-            writer.println("название станции:\t" + shedule.station.title);
-            writer.println("тип транспорта:\t" + shedule.station.transport_type + "\n");
-            for (int i = 0; i < shedule.schedule.size(); ++i) {
-                writer.println("рейс\t" + shedule.schedule.get(i).thread.title);
-                writer.println("даты отъезда:\t" + shedule.schedule.get(i).days);
-                writer.println("время отправления:\t" + shedule.schedule.get(i).days);
+            writer.println("тип станции:\t" + shedule.getStation().getStationTypeName());
+            writer.println("название станции:\t" + shedule.getStation().getTitle());
+            writer.println("тип транспорта:\t" + shedule.getStation().getTransportType() + "\n");
+            for (int i = 0; i < shedule.getSchedule().size(); ++i) {
+                writer.println("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle());
+                writer.println("даты отъезда:\t" + shedule.getSchedule().get(i).getDays());
+                writer.println("время отправления:\t" + shedule.getSchedule().get(i).getDays());
                 writer.println("\n\n");
             }
 
@@ -148,7 +132,8 @@ public class Server {
                     showInfCarrier(writer);
                     break;
                 default:
-                    writer.println("Not have this command. try write key(-h) or white (-exit), if you want to leave");
+                    writer.println(
+                            "Not have this command. try write key(-h) or white (-exit), if you want to leave");
                     writer.flush();
                     break;
             }

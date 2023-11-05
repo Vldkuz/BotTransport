@@ -3,7 +3,16 @@ package Develop.API.APIObj.NearStations;
 import java.util.List;
 
 public class NearStations {
-  public List<Station> stations;
+
+  private List<Station> stations;
+
+  public List<Station> getStations() {
+    return stations;
+  }
+
+  public void setStations(List<Station> stations) {
+    this.stations = stations;
+  }
 }
 
 

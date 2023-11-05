@@ -11,6 +11,7 @@ import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import java.io.IOException;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,12 +35,12 @@ public class TestAP {
             KeyManager key = new KeyManager("src/resources/APISheduleKey.json");
             API api = new API(key.getKey("Key"), "https://api.rasp.yandex.net/v3.0");
 
-            TestSheduleStation(api,"");
-            TestSheduleBetStation(api, "","");
-            TestFollowStations(api,"");
-            TestInfoCarrier(api,"");
-            TestNearStations(api,"","","");
-            TestNearCity(api,"", "");
+            testSheduleStation(api,"");
+            testSheduleBetStation(api, "","");
+            testFollowStations(api,"");
+            testInfoCarrier(api,"");
+            testNearStations(api,"","","");
+            testnearcity(api,"", "");
 
 
         } catch (IOException e) {
@@ -52,51 +53,57 @@ public class TestAP {
     }
 
 
-    public void TestSheduleStation(API api, String station)
+    public void testSheduleStation(API api, String station)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.station = station;
+        TestCase.setStation(station);
+        TestCase.setDate(LocalDate.now().toString());
         SheduleStation shedule = api.getSheduleStation(TestCase);
     }
 
-    public void TestSheduleBetStation (API api, String to, String from)
+    public void testSheduleBetStation(API api, String to, String from)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.to = to;
-        TestCase.from = from;
+        TestCase.setTo(to);
+        TestCase.setFrom(from);
+        TestCase.setDate(LocalDate.now().toString());
 
         SheduleBetStation shedule =  api.getShedule(TestCase);
     }
 
-    public void TestFollowStations (API api, String uid) throws IOException, InterruptedException {
+    public void testFollowStations(API api, String uid) throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.uid = uid;
+        TestCase.setUid(uid);
+        TestCase.setDate(LocalDate.now().toString());
 
         FollowStations folStat = api.getFollowList(TestCase);
     }
 
-    public void TestNearStations (API api, String lat, String lng, String dist)
+    public void testNearStations(API api, String lat, String lng, String dist)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.latitude = lat;
-        TestCase.longtitude = lng;
-        TestCase.distance = dist;
+        TestCase.setLatitude(lat);
+        TestCase.setLongtitude(lng);
+        TestCase.setDistance(dist);
+        TestCase.setDate(LocalDate.now().toString());
 
         NearStations nearStat = api.getNearStations(TestCase);
     }
 
-    public void TestInfoCarrier (API api, String code)
+    public void testInfoCarrier(API api, String code)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.code = code;
+        TestCase.setCode(code);
+        TestCase.setDate(LocalDate.now().toString());
         InfoCarrier InfoCarrier = api.getInfoCarrier(TestCase);
     }
 
-    public void TestNearCity (API api, String lat, String lng)
+    public void testnearcity(API api, String lat, String lng)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
-        TestCase.latitude = lat;
-        TestCase.longtitude = lng;
+        TestCase.setLatitude(lat);
+        TestCase.setLongtitude(lng);
+        TestCase.setDate(LocalDate.now().toString());
 
         NearCity nearStat = api.getNearCity(TestCase);
     }
@@ -110,12 +117,11 @@ public class TestAP {
             KeyManager key = new KeyManager("src/resources/APISheduleKey.json");
             API api = new API(key.getKey("Key"), "https://api.rasp.yandex.net/v3.0");
 
-            TestSheduleStation(api,"s9600213");
-            TestSheduleBetStation(api, "c146","c213");
-            TestFollowStations(api,"SU-1524_231029_c26_12");
-            TestInfoCarrier(api,"680");
-            TestNearStations(api,"50.4516962252837","40.1392928134917","50");
-            TestNearCity(api,"54.106677", "39.601726");
+            testSheduleStation(api,"s9600213");
+            testSheduleBetStation(api, "c146","c213");
+            testInfoCarrier(api,"680");
+            testNearStations(api,"50.4516962252837","40.1392928134917","50");
+            testnearcity(api,"54.106677", "39.601726");
 
             // Здесь можно подтягивать эти данные из файла и прогонять на большем количестве тесткейсов.
         }
