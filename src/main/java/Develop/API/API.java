@@ -11,11 +11,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class API implements APIMethods {
 
-    private final APIConnector APICon;
+    private APIConnector APICon;
     private final ReqBuilder request;
 
     public API(String APIKey, String APIUrl) {
@@ -28,13 +27,13 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/search/?");
 
-        if (params.to.isEmpty() || params.from.isEmpty()) {
+        if (params.getTo().isEmpty() || params.getFrom().isEmpty()) {
             throw new RuntimeException("Не указан параметр to или from");
         }
 
         request.addParams(params);
 
-        return (SheduleBetStation) getObjMapper(request, SheduleBetStation.class);
+        return getObjMapper(request, SheduleBetStation.class);
     }
 
 
@@ -43,13 +42,13 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/schedule/?");
 
-        if (params.station.isEmpty()) {
+        if (params.getStation().isEmpty()) {
             throw new RuntimeException("Не указан параметр station");
         }
 
         request.addParams(params);
 
-        return (SheduleStation) getObjMapper(request, SheduleStation.class);
+        return getObjMapper(request, SheduleStation.class);
     }
 
     @Override
@@ -57,12 +56,12 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/thread/?");
 
-        if (params.uid.isEmpty()) {
+        if (params.getUid().isEmpty()) {
             throw new RuntimeException("Не указан параметр uid");
         }
 
         request.addParams(params);
-        return (FollowStations) getObjMapper(request, FollowStations.class);
+        return getObjMapper(request, FollowStations.class);
     }
 
     @Override
@@ -70,13 +69,13 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/nearest_stations/?");
 
-        if (params.latitude.isEmpty() || params.longtitude.isEmpty() || params.distance.isEmpty()) {
+        if (params.getLatitude().isEmpty() || params.getLongtitude().isEmpty() || params.getDistance().isEmpty()) {
             throw new RuntimeException("Не указан параметр lat или lng или distance");
         }
 
         request.addParams(params);
 
-        return (NearStations) getObjMapper(request, NearStations.class);
+        return getObjMapper(request, NearStations.class);
     }
 
     @Override
@@ -84,13 +83,13 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/nearest_settlement/?");
 
-        if (params.longtitude.isEmpty() || params.latitude.isEmpty()) {
+        if (params.getLongtitude().isEmpty() || params.getLatitude().isEmpty()) {
             throw new RuntimeException("Не указан параметр lat или lng");
         }
 
         request.addParams(params);
 
-        return (NearCity) getObjMapper(request, NearCity.class);
+        return getObjMapper(request, NearCity.class);
     }
 
     @Override
@@ -98,27 +97,27 @@ public class API implements APIMethods {
             throws IOException, InterruptedException {
         request.setBranch("/carrier/?");
 
-        if (params.code.isEmpty()) {
+        if (params.getCode().isEmpty()) {
             throw new RuntimeException("Не указан параметр code");
         }
 
         request.addParams(params);
 
-        return (InfoCarrier) getObjMapper(request, InfoCarrier.class);
+        return getObjMapper(request, InfoCarrier.class);
     }
 
     @Override
     public StationList getAllowStationsList() throws IOException, InterruptedException {
         request.setBranch("/stations_list/?");
-        return (StationList) getObjMapper(request, StationList.class);
+        return getObjMapper(request,StationList.class);
     }
 
-    private Object getObjMapper(ReqBuilder request, Class templateClass)
+    private <T> T getObjMapper(ReqBuilder request, Class<T> ClassObj)
             throws IOException, InterruptedException {
         ObjectMapper objMap = new ObjectMapper();
         InputStream StreamAPI = APICon.getInputStream(request.getRequest());
         objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objMap.readValue(StreamAPI, templateClass);
+        return (T) objMap.readValue(StreamAPI, ClassObj);
     }
 
 }

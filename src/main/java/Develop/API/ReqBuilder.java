@@ -21,53 +21,54 @@ public class ReqBuilder {
 
         ArrayList<String> params = new ArrayList<String>();
 
-        if (!param.to.isEmpty()) {
-            params.add("to=" + param.to);
+        // Происходит разбор параметров, которые заключены в объекте.
+        if (!param.getTo().isEmpty()) {
+            params.add("to=" + param.getTo());
         }
-        if (!param.from.isEmpty()){
-            params.add("from=" + param.from);
+        if (!param.getFrom().isEmpty()){
+            params.add("from=" + param.getFrom());
         }
-        if (!param.date.isEmpty()){
-            params.add("date=" + param.date);
+        if (!param.getDate().isEmpty()){
+            params.add("date=" + param.getDate());
         }
-        if (!param.transportType.isEmpty()) {
-            params.add("transport_types=" + param.transportType);
+        if (!param.getTransportType().isEmpty()) {
+            params.add("transport_types=" + param.getTransportType());
         }
-        if (!param.limit.isEmpty()) {
-            params.add("limit=" + param.limit);
+        if (!param.getLimit().isEmpty()) {
+            params.add("limit=" + param.getLimit());
         }
-        if (!param.resultTimezone.isEmpty()) {
-            params.add("result_timezone=" + param.resultTimezone);
+        if (!param.getResultTimezone().isEmpty()) {
+            params.add("result_timezone=" + param.getResultTimezone());
         }
-        if (!param.withTransfers.isEmpty()){
-            params.add("transfers=" + param.withTransfers);
+        if (!param.getWithTransfers().isEmpty()){
+            params.add("transfers=" + param.getWithTransfers());
         }
-        if (!param.station.isEmpty()) {
-            params.add("station=" + param.station);
+        if (!param.getStation().isEmpty()) {
+            params.add("station=" + param.getStation());
         }
-        if (!param.direction.isEmpty()){
-            params.add("direction=" + param.direction);
+        if (!param.getDirection().isEmpty()){
+            params.add("direction=" + param.getDirection());
         }
-        if (!param.event.isEmpty()){
-            params.add("event=" + param.event);
+        if (!param.getEvent().isEmpty()){
+            params.add("event=" + param.getEvent());
         }
-        if (!param.uid.isEmpty()){
-            params.add("uid=" + param.uid);
+        if (!param.getUid().isEmpty()){
+            params.add("uid=" + param.getUid());
         }
-        if (!param.latitude.isEmpty()){
-            params.add("lat=" + param.latitude);
+        if (!param.getLatitude().isEmpty()){
+            params.add("lat=" + param.getLatitude());
         }
-        if (!param.longtitude.isEmpty()) {
-            params.add("lng=" + param.longtitude);
+        if (!param.getLongtitude().isEmpty()) {
+            params.add("lng=" + param.getLongtitude());
         }
-        if (!param.distance.isEmpty()){
-            params.add("distance=" + param.distance);
+        if (!param.getDistance().isEmpty()){
+            params.add("distance=" + param.getDistance());
         }
-        if (!param.code.isEmpty()){
-            params.add("code=" + param.code);
+        if (!param.getCode().isEmpty()){
+            params.add("code=" + param.getCode());
         }
-        if (!param.stationType.isEmpty()){
-            params.add("station_types=" + param.stationType);
+        if (!param.getStationType().isEmpty()){
+            params.add("station_types=" + param.getStationType());
         }
 
         request += params.get(0); // Поскольку первый должен идти без &

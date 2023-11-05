@@ -111,19 +111,19 @@ public class TGServer {
 
         StringBuilder Return = new StringBuilder("");
         ParamBuilder param = new ParamBuilder();
-        param.station = text;
+        param.setStation(text);
         try {
             SheduleStation shedule = api.getSheduleStation(param);
-            Return.append("тип станции:\t" + shedule.station.station_type_name);
+            Return.append("тип станции:\t" + shedule.getStation().getStationTypeName());
             Return.append("\n");
-            Return.append("название станции:\t" + shedule.station.title);
+            Return.append("название станции:\t" + shedule.getStation().getTitle());
             Return.append("\n");
-            Return.append("тип транспорта:\t" + shedule.station.transport_type+"\n"+"\n");
+            Return.append("тип транспорта:\t" + shedule.getStation().getTransportType()+"\n"+"\n");
 
             for (int i = 0; i < 2/*shedule.schedule.size()*/; ++i) {
-                Return.append("рейс\t" + shedule.schedule.get(i).thread.title+"\n");
-                Return.append("даты отъезда:\t" + shedule.schedule.get(i).days+"\n");
-                Return.append("время отправления:\t" + shedule.schedule.get(i).days+"\n");
+                Return.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle()+"\n");
+                Return.append("даты отъезда:\t" + shedule.getSchedule().get(i).getDays() +"\n");
+                Return.append("время отправления:\t" + shedule.getSchedule().get(i).getDays()+"\n");
                 Return.append("\n\n");
             }
 
