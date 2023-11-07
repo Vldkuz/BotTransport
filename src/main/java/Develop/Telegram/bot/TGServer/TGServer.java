@@ -16,9 +16,9 @@ public class TGServer {
 
     private final API api;
 
-    private final String chatId;
-    private final String text;
-    private final SendMessage sendMessage;
+    private  String chatId;
+    private  String text;
+    private  SendMessage sendMessage;
 
     public TGServer(String chatId, String text, SendMessage sendMessage) {
         this.chatId = chatId;
@@ -62,35 +62,42 @@ public class TGServer {
 
     public String run(String text, StateObject comand) {
         if (comand.getStatus().equals("bs")) {
-            return (showScheduleByStation());
+            return showScheduleByStation();
         } else {
             switch (text) {
                 case "h": //help
+                case "/h": //help
                     return help();
 
                 case "bs":               //Расписание рейсов по станции
+                case "/bs":               //Расписание рейсов по станции
                     comand.setStatus("bs");
                     return ("Write code of city, please ");
 
                 case "lot":               //Список станций следования
+                case "/lot":               //Список станций следования
                     return (showFollowStations());
 
 
                 case "fs":               //Расписание рейсов между станциями
+                case "/fs":               //Расписание рейсов между станциями
 
                     return (showScheduleBetStation());
 
 
                 case "ns":               //Список ближайших станций
+                case "/ns":               //Список ближайших станций
 
                     return (showNearStation());
 
 
                 case "nc":               //Ближайший город
+                case "/nc":               //Ближайший город
 
                     return (showNeartCity());
 
                 case "ci":               //Информация о перевозчике
+                case "/ci":               //Информация о перевозчике
 
                     return (showInfCarrier());
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Station {
 
+    private String transport_type;
     private String code;
     private String stationType; // station_type
     private String stationTypeName; // station_type_name
