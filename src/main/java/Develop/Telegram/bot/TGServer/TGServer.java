@@ -20,10 +20,9 @@ public class TGServer {
     private  String text;
     private  SendMessage sendMessage;
 
-    public TGServer(String chatId, String text, SendMessage sendMessage) {
+    public TGServer(String chatId, String text) {
         this.chatId = chatId;
         this.text = text;
-        this.sendMessage = sendMessage;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
