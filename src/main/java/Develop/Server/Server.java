@@ -4,6 +4,9 @@ import Develop.API.API;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
+import Develop.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,8 +28,12 @@ public class Server {
         reader = new BufferedReader(new InputStreamReader(in));
         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
         try {
-            KeyManager KeyAPI = new KeyManager("src/resources/APISheduleKey.json");
-            String keyValue = KeyAPI.getKey("Key");
+            /*KeyManager KeyAPI = new KeyManager("src/resources/APISheduleKey.json");
+            String keyValue = KeyAPI.getKey("Key");*/
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
+            KeyManager keyAPI = objectMapper.readValue(inputStream,KeyManager.class);
+            String keyValue = keyAPI.getKey();
             api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
         } catch (IOException e) {
             throw new RuntimeException(e);
