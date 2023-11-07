@@ -39,7 +39,7 @@ public class Session {
 
 
     public void run(StateObject comand) {
-        TGServer tgServer = new TGServer(text);
+        TGServer tgServer = new TGServer(chatId,text);
         sendText(tgServer.run(text, comand));
     }
 
