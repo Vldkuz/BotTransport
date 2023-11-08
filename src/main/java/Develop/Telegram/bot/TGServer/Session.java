@@ -1,5 +1,6 @@
 package Develop.Telegram.bot.TGServer;
 
+import Develop.Telegram.bot.MessageStorage;
 import Develop.Telegram.bot.StateObject;
 import Develop.Telegram.bot.TelegramBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -24,6 +25,7 @@ public class Session {
         List<BotCommand> listofCommands = new ArrayList<>();
         listofCommands.add(new BotCommand("/h", "help"));
         listofCommands.add(new BotCommand("/bs", "Расписание рейсов по станции"));
+        listofCommands.add(new BotCommand("/rs", "Недавние станции"));
         listofCommands.add(new BotCommand("/lot", "Список станций следования"));
         listofCommands.add(new BotCommand("/fs", "Расписание рейсов между станциями"));
         listofCommands.add(new BotCommand("/ns", "Список ближайших станций"));
@@ -38,9 +40,9 @@ public class Session {
     }
 
 
-    public void run(StateObject comand) {
+    public void run(StateObject comand, MessageStorage messageStorage) {
         TGServer tgServer = new TGServer(chatId,text);
-        sendText(tgServer.run(text, comand));
+        sendText(tgServer.run(text, comand, messageStorage));
     }
 
     private void sendText(String massege) {

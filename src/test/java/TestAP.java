@@ -11,7 +11,11 @@ import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+
+import Develop.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +36,11 @@ public class TestAP {
     public void TestValidationMethods(){
         try
         {
-            KeyManager key = new KeyManager("src/resources/APISheduleKey.json");
-            API api = new API(key.getKey("Key"), "https://api.rasp.yandex.net/v3.0");
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
+            KeyManager keyAPI = objectMapper.readValue(inputStream,KeyManager.class);
+            String keyValue = keyAPI.getKey();
+            API api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
 
             testSheduleStation(api,"");
             testSheduleBetStation(api, "","");
@@ -114,8 +121,11 @@ public class TestAP {
 
         try {
 
-            KeyManager key = new KeyManager("src/resources/APISheduleKey.json");
-            API api = new API(key.getKey("Key"), "https://api.rasp.yandex.net/v3.0");
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
+            KeyManager keyAPI = objectMapper.readValue(inputStream,KeyManager.class);
+            String keyValue = keyAPI.getKey();
+            API api = new API(keyValue/*json_api_key*/, "https://api.rasp.yandex.net/v3.0");
 
             testSheduleStation(api,"s9600213");
             testSheduleBetStation(api, "c146","c213");

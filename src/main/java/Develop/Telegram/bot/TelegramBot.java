@@ -18,6 +18,8 @@ import java.io.InputStream;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private StateObject Comand = new StateObject("");
+    private MessageStorage messageStorage = new MessageStorage();
+
 
     @Override
     public String getBotUsername() {
@@ -49,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String chatId = update.getMessage().getChatId().toString();
             String text = update.getMessage().getText();
             Session session = new Session(chatId, text,this);
-            session.run(Comand);
+            session.run(Comand, messageStorage);
 
         }
     }

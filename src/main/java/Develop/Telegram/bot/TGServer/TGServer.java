@@ -5,6 +5,7 @@ import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import Develop.Main;
+import Develop.Telegram.bot.MessageStorage;
 import Develop.Telegram.bot.StateObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,9 +17,10 @@ public class TGServer {
 
     private final API api;
 
-    private  String chatId;
-    private  String text;
-    private  SendMessage sendMessage;
+    private String chatId;
+    private String text;
+    private SendMessage sendMessage;
+
 
     public TGServer(String chatId, String text) {
         this.chatId = chatId;
@@ -37,6 +39,10 @@ public class TGServer {
 
     private static String help() {
         return "The help code";
+    }
+
+    private static String hisoryOfmaeesge(MessageStorage messageStorage) {
+        return messageStorage.getAllMessages();
     }
 
     private static String showScheduleBetStation() {
@@ -59,9 +65,10 @@ public class TGServer {
         return "Information about the carrier";
     }
 
-    public String run(String text, StateObject comand) {
+    public String run(String text, StateObject comand, MessageStorage messageStorage) {
         if (comand.getStatus().equals("bs")) {
-            return showScheduleByStation();
+            comand.setStatus("");
+            return showScheduleByStation(messageStorage);
         } else {
             switch (text) {
                 case "h": //help
@@ -72,6 +79,10 @@ public class TGServer {
                 case "/bs":               //Расписание рейсов по станции
                     comand.setStatus("bs");
                     return ("Write code of city, please ");
+
+                case "rs":               //Недавние станции
+                case "/rs":              //Recent stations
+                    return (hisoryOfmaeesge(messageStorage));
 
                 case "lot":               //Список станций следования
                 case "/lot":               //Список станций следования
@@ -108,24 +119,25 @@ public class TGServer {
     }
 
 
-
-    public String showScheduleByStation() {
+    private String showScheduleByStation(MessageStorage messageStorage) {
 
         StringBuilder Return = new StringBuilder("");
+
         ParamBuilder param = new ParamBuilder();
         param.setStation(text);
+        messageStorage.addMessage(text, chatId);
         try {
             SheduleStation shedule = api.getSheduleStation(param);
             Return.append("тип станции:\t" + shedule.getStation().getStationTypeName());
             Return.append("\n");
             Return.append("название станции:\t" + shedule.getStation().getTitle());
             Return.append("\n");
-            Return.append("тип транспорта:\t" + shedule.getStation().getTransportType()+"\n"+"\n");
+            Return.append("тип транспорта:\t" + shedule.getStation().getTransportType() + "\n" + "\n");
 
             for (int i = 0; i < 2/*shedule.schedule.size()*/; ++i) {
-                Return.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle()+"\n");
-                Return.append("даты отъезда:\t" + shedule.getSchedule().get(i).getDays() +"\n");
-                Return.append("время отправления:\t" + shedule.getSchedule().get(i).getDays()+"\n");
+                Return.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle() + "\n");
+                Return.append("даты отъезда:\t" + shedule.getSchedule().get(i).getDays() + "\n");
+                Return.append("время отправления:\t" + shedule.getSchedule().get(i).getDays() + "\n");
                 Return.append("\n\n");
             }
 
