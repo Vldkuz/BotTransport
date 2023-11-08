@@ -12,28 +12,29 @@ import org.apache.http.HttpStatus;
 
 public class APIConnector {
 
-    public APIConnector(String Key) {
-        if (Key.length() == 0) {
-            throw new RuntimeException("Key is Empty");
-        }
-        APIKey = new String(Key);
+  public APIConnector(String key) {
+    if (key.length() == 0) {
+      throw new RuntimeException("Key is Empty");
+    }
+    APIKey = new String(key);
+  }
+
+  public InputStream getInputStream(String request, int timeReqMinutes) throws IOException, InterruptedException {
+    HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(timeReqMinutes)).build();
+    HttpRequest httpReq = HttpRequest.newBuilder(URI.create(request))
+        .headers("Authorization", APIKey).build();
+
+    HttpResponse<InputStream> response;
+    response = client.send(httpReq, BodyHandlers.ofInputStream());
+
+    if (response.statusCode() == HttpStatus.SC_OK) {
+      return response.body();
     }
 
-    public InputStream getInputStream(String request) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(10)).build();
-        HttpRequest httpReq = HttpRequest.newBuilder(URI.create(request)).headers("Authorization",APIKey).build();
-
-        HttpResponse<InputStream> response;
-        response = client.send(httpReq, BodyHandlers.ofInputStream());
-
-        if (response.statusCode() == HttpStatus.SC_OK) {
-            return response.body();
-        }
-
-        throw new IOException("Response Code is " + response.statusCode());
-    }
+    throw new IOException("Response Code is " + response.statusCode());
+  }
 
 
-    private final String APIKey;
+  private final String APIKey;
 
 }

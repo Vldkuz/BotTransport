@@ -11,11 +11,8 @@ import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 
-import Develop.Main;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +22,7 @@ public class TestAP {
     @Test
     public void testValidationAPI() {
         Throwable thrown = assertThrows(RuntimeException.class, () -> {
-            API emptyKey = new API("", "url");
-            API emptyUrl = new API("key", "");
+            API emptyKey = new API("");
         });
 
         assertNotNull(thrown.getMessage());
@@ -36,16 +32,15 @@ public class TestAP {
     public void TestValidationMethods(){
         try
         {
-            KeyManager key = new KeyManager();
-            key.setKey("/APISheduleKey.json");
-            API api = new API(key.getKey(), "https://api.rasp.yandex.net/v3.0");
+            KeyManager key = new KeyManager("/APISheduleKey");
+            API api = new API(key.getKey());
 
             testSheduleStation(api,"");
             testSheduleBetStation(api, "","");
             testFollowStations(api,"");
             testInfoCarrier(api,"");
             testNearStations(api,"","","");
-            testnearcity(api,"", "");
+            testNearcity(api,"", "");
 
 
         } catch (IOException e) {
@@ -103,7 +98,7 @@ public class TestAP {
         InfoCarrier InfoCarrier = api.getInfoCarrier(TestCase);
     }
 
-    public void testnearcity(API api, String lat, String lng)
+    public void testNearcity(API api, String lat, String lng)
             throws IOException, InterruptedException {
         ParamBuilder TestCase = new ParamBuilder();
         TestCase.setLatitude(lat);
@@ -118,18 +113,15 @@ public class TestAP {
     public void TestAPI() {
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            InputStream inputStream = Main.class.getResourceAsStream("/APISheduleKey.json");
-            KeyManager keyAPI = objectMapper.readValue(inputStream, KeyManager.class);
 
-            String key = keyAPI.getKey();
-            API api = new API(key,"https://api.rasp.yandex.net/v3.0");
+            KeyManager key = new KeyManager("/APISheduleKey");
+            API api = new API(key.getKey());            ;
 
             testSheduleStation(api,"s9600213");
             testSheduleBetStation(api, "c146","c213");
             testInfoCarrier(api,"680");
             testNearStations(api,"50.4516962252837","40.1392928134917","50");
-            testnearcity(api,"54.106677", "39.601726");
+            testNearcity(api,"54.106677", "39.601726");
 
             // Здесь можно подтягивать эти данные из файла и прогонять на большем количестве тесткейсов.
         }

@@ -1,2 +1,2 @@
-APISheduleKey.json filter=git-crypt diff=git-crypt
-APITelegramKey.json filter=git-crypt diff=git-crypt
+APISheduleKey filter=git-crypt diff=git-crypt
+APITelegramKey filter=git-crypt diff=git-crypt

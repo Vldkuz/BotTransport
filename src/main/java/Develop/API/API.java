@@ -14,111 +14,112 @@ import java.io.InputStream;
 
 public class API implements APIMethods {
 
-    private APIConnector APICon;
-    private final ReqBuilder request;
+  private APIConnector APICon;
+  private final ReqBuilder request;
 
-    public API(String APIKey, String APIUrl) {
-        APICon = new APIConnector(APIKey);
-        request = new ReqBuilder(APIUrl);
+  public API(String APIKey) {
+    APICon = new APIConnector(APIKey);
+    request = new ReqBuilder("https://api.rasp.yandex.net/v3.0");
+  }
+
+  @Override
+  public SheduleBetStation getShedule(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/search/?");
+
+    if (params.getTo().isEmpty() || params.getFrom().isEmpty()) {
+      throw new RuntimeException("Не указан параметр to или from");
     }
 
-    @Override
-    public SheduleBetStation getShedule(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/search/?");
+    request.addParams(params);
 
-        if (params.getTo().isEmpty() || params.getFrom().isEmpty()) {
-            throw new RuntimeException("Не указан параметр to или from");
-        }
+    return getObjMapper(request, SheduleBetStation.class, 1);
+  }
 
-        request.addParams(params);
 
-        return getObjMapper(request, SheduleBetStation.class);
+  @Override
+  public SheduleStation getSheduleStation(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/schedule/?");
+
+    if (params.getStation().isEmpty()) {
+      throw new RuntimeException("Не указан параметр station");
     }
 
+    request.addParams(params);
 
-    @Override
-    public SheduleStation getSheduleStation(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/schedule/?");
+    return getObjMapper(request, SheduleStation.class, 1);
+  }
 
-        if (params.getStation().isEmpty()) {
-            throw new RuntimeException("Не указан параметр station");
-        }
+  @Override
+  public FollowStations getFollowList(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/thread/?");
 
-        request.addParams(params);
-
-        return getObjMapper(request, SheduleStation.class);
+    if (params.getUid().isEmpty()) {
+      throw new RuntimeException("Не указан параметр uid");
     }
 
-    @Override
-    public FollowStations getFollowList(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/thread/?");
+    request.addParams(params);
+    return getObjMapper(request, FollowStations.class, 1);
+  }
 
-        if (params.getUid().isEmpty()) {
-            throw new RuntimeException("Не указан параметр uid");
-        }
+  @Override
+  public NearStations getNearStations(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/nearest_stations/?");
 
-        request.addParams(params);
-        return getObjMapper(request, FollowStations.class);
+    if (params.getLatitude().isEmpty() || params.getLongtitude().isEmpty() || params.getDistance()
+        .isEmpty()) {
+      throw new RuntimeException("Не указан параметр lat или lng или distance");
     }
 
-    @Override
-    public NearStations getNearStations(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/nearest_stations/?");
+    request.addParams(params);
 
-        if (params.getLatitude().isEmpty() || params.getLongtitude().isEmpty() || params.getDistance().isEmpty()) {
-            throw new RuntimeException("Не указан параметр lat или lng или distance");
-        }
+    return getObjMapper(request, NearStations.class,1);
+  }
 
-        request.addParams(params);
+  @Override
+  public NearCity getNearCity(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/nearest_settlement/?");
 
-        return getObjMapper(request, NearStations.class);
+    if (params.getLongtitude().isEmpty() || params.getLatitude().isEmpty()) {
+      throw new RuntimeException("Не указан параметр lat или lng");
     }
 
-    @Override
-    public NearCity getNearCity(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/nearest_settlement/?");
+    request.addParams(params);
 
-        if (params.getLongtitude().isEmpty() || params.getLatitude().isEmpty()) {
-            throw new RuntimeException("Не указан параметр lat или lng");
-        }
+    return getObjMapper(request, NearCity.class, 1);
+  }
 
-        request.addParams(params);
+  @Override
+  public InfoCarrier getInfoCarrier(ParamBuilder params)
+      throws IOException, InterruptedException {
+    request.setBranch("/carrier/?");
 
-        return getObjMapper(request, NearCity.class);
+    if (params.getCode().isEmpty()) {
+      throw new RuntimeException("Не указан параметр code");
     }
 
-    @Override
-    public InfoCarrier getInfoCarrier(ParamBuilder params)
-            throws IOException, InterruptedException {
-        request.setBranch("/carrier/?");
+    request.addParams(params);
 
-        if (params.getCode().isEmpty()) {
-            throw new RuntimeException("Не указан параметр code");
-        }
+    return getObjMapper(request, InfoCarrier.class, 1);
+  }
 
-        request.addParams(params);
+  @Override
+  public StationList getAllowStationsList() throws IOException, InterruptedException {
+    request.setBranch("/stations_list/?");
+    return getObjMapper(request, StationList.class, 10);
+  }
 
-        return getObjMapper(request, InfoCarrier.class);
-    }
-
-    @Override
-    public StationList getAllowStationsList() throws IOException, InterruptedException {
-        request.setBranch("/stations_list/?");
-        return getObjMapper(request,StationList.class);
-    }
-
-    private <T> T getObjMapper(ReqBuilder request, Class<T> ClassObj)
-            throws IOException, InterruptedException {
-        ObjectMapper objMap = new ObjectMapper();
-        InputStream StreamAPI = APICon.getInputStream(request.getRequest());
-        objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return (T) objMap.readValue(StreamAPI, ClassObj);
-    }
+  private <T> T getObjMapper(ReqBuilder request, Class<T> ClassObj, int timeReq)
+      throws IOException, InterruptedException {
+    ObjectMapper objMap = new ObjectMapper();
+    InputStream StreamAPI = APICon.getInputStream(request.getRequest(), timeReq);
+    objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    return (T) objMap.readValue(StreamAPI, ClassObj);
+  }
 
 }
 
