@@ -1,17 +1,18 @@
 package Develop.Telegram.bot.TGServer;
 
-import Develop.API.API;
+import Develop.API.APIExceptions.HTTPClientException;
+import Develop.API.APIExceptions.ParserException;
+import Develop.API.APIExceptions.ValidationException;
+import Develop.API.APIYandex;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
-import Develop.API.ParamBuilder;
+import Develop.API.APIServices.ParamBuilder;
 import Develop.KeyManager.KeyManager;
 import Develop.Telegram.bot.StateObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.io.IOException;
-
 public class TGServer {
 
-  private final API api;
+  private APIYandex api;
   private String chatId;
   private String text;
   private SendMessage sendMessage;
@@ -21,7 +22,11 @@ public class TGServer {
     this.text = text;
     KeyManager keyHolder = new KeyManager("/APISheduleKey");
     String keyValue = keyHolder.getKey();
-    this.api = new API(keyValue);
+    try {
+      this.api = new APIYandex(keyValue);
+    } catch (ValidationException e) {
+      // Добавить обработку ошибки валидации
+    }
   }
 
   private static String help() {
@@ -116,8 +121,14 @@ public class TGServer {
 
       return Return.toString();
 
-    } catch (IOException | InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (ParserException e) {
+      // Добавить обработку ошибок парсера
+    } catch (HTTPClientException e) {
+      // Добавить обработку ошибок клиента
+    } catch (ValidationException e) {
+      // Добавить обработку ошибок валидации
     }
+
+    return Return.toString();
   }
 }

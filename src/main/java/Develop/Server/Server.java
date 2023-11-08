@@ -1,11 +1,12 @@
 package Develop.Server;
 
-import Develop.API.API;
+import Develop.API.APIExceptions.HTTPClientException;
+import Develop.API.APIExceptions.ParserException;
+import Develop.API.APIExceptions.ValidationException;
+import Develop.API.APIYandex;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
-import Develop.API.ParamBuilder;
+import Develop.API.APIServices.ParamBuilder;
 import Develop.KeyManager.KeyManager;
-import Develop.Main;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,7 +19,7 @@ import java.io.PrintWriter;
 
 public class Server {
 
-  private final API api;
+  private APIYandex api;
   private final BufferedReader reader;
   private final PrintWriter writer;
 
@@ -26,7 +27,11 @@ public class Server {
     reader = new BufferedReader(new InputStreamReader(in));
     writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
     KeyManager keyManager = new KeyManager("APISheduleKey");
-    api = new API(keyManager.getKey());
+    try {
+      api = new APIYandex(keyManager.getKey());
+    } catch (ValidationException e) {
+      // Добавить обработку ошибок валидации
+    }
   }
 
   private static void help(PrintWriter writer) {
@@ -69,7 +74,16 @@ public class Server {
       ParamBuilder param = new ParamBuilder();
       param.setStation(Station);
 
-      SheduleStation shedule = api.getSheduleStation(param);
+      SheduleStation shedule = null;
+      try {
+        shedule = api.getSheduleStation(param);
+      } catch (HTTPClientException e) {
+        // Обрабатываем возможную ошибку клиента
+      } catch (ParserException e) {
+        // Обрабатываем возможную ошибку парсера
+      } catch (ValidationException e) {
+        // Обрабатываем возможную ошибку валидации
+      }
       // Вызываем метод getShedule для получения расписания маршрутов
 
       writer.println("тип станции:\t" + shedule.getStation().getStationTypeName());
@@ -82,16 +96,13 @@ public class Server {
         writer.println("\n\n");
       }
 
-    } catch (IOException e) {
-      // Обрабатываем возможную ошибку ввода-вывода
-      e.printStackTrace();
-    } catch (InterruptedException exception) {
-      exception.printStackTrace();
-    }
 
+    } catch (IOException e) {
+      // Убрать вывод этого исключения, чтобы бросались только категоризованные исключения
+    }
   }
 
-  public void run() {
+    public void run() {
     writer.println("//приветствие");
     writer.flush(); // Очистка буфера и запись данных
 

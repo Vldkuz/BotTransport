@@ -1,4 +1,4 @@
-package Develop.API;
+package Develop.API.APIServices;
 
 public class ParamBuilder {
 
@@ -14,7 +14,7 @@ public class ParamBuilder {
   private String event = "";
   private String uid = "";
   private String latitude = "";
-  private String longtitude = "";
+  private String longitude = "";
   private String distance = "";
   private String code = "";
   private String stationType = "";
@@ -115,12 +115,12 @@ public class ParamBuilder {
     this.latitude = latitude;
   }
 
-  public String getLongtitude() {
-    return longtitude;
+  public String getLongitude() {
+    return longitude;
   }
 
-  public void setLongtitude(String longtitude) {
-    this.longtitude = longtitude;
+  public void setLongitude(String longitude) {
+    this.longitude = longitude;
   }
 
   public String getDistance() {

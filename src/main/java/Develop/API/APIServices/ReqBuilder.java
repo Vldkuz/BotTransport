@@ -1,7 +1,7 @@
-package Develop.API;
+package Develop.API.APIServices;
 
+import Develop.API.APIServices.ParamBuilder;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReqBuilder {
 
@@ -55,8 +55,8 @@ public class ReqBuilder {
     if (!param.getLatitude().isEmpty()) {
       params.add("lat=" + param.getLatitude());
     }
-    if (!param.getLongtitude().isEmpty()) {
-      params.add("lng=" + param.getLongtitude());
+    if (!param.getLongitude().isEmpty()) {
+      params.add("lng=" + param.getLongitude());
     }
     if (!param.getDistance().isEmpty()) {
       params.add("distance=" + param.getDistance());
