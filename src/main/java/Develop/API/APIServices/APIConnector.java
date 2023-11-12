@@ -18,19 +18,22 @@ import org.apache.http.HttpStatus;
 public class APIConnector {
 
   public APIConnector(String key) throws ValidationException {
-    if (key.isEmpty()) {
+    try {APIKey = key;getInputStream("https://api.rasp.yandex.net/v3.0/copyright/?", Duration.ofMinutes(1));}
+
+    catch (HTTPClientException e) {
       FieldHolder errorKey = new FieldHolder("APIKey", key);
       List<FieldHolder> holdersField = new ArrayList<>();
       holdersField.add(errorKey);
-      throw new ValidationException("Пустой ключ", holdersField);
-    }
-    APIKey = new String(key);
+      throw new ValidationException("Ошибка валидации ключа", holdersField);}
   }
 
   public InputStream getInputStream(String request, Duration time) throws HTTPClientException {
     HttpClient client = HttpClient.newBuilder().connectTimeout(time).build();
     HttpRequest httpReq = HttpRequest.newBuilder(URI.create(request))
         .headers("Authorization", APIKey).build();
+
+    if (APIKey.isEmpty())
+      throw new HTTPClientException("Поле ключа пустое");
 
     HttpResponse<InputStream> response;
 
