@@ -20,6 +20,7 @@ public class JSONParser {
 
   public JSONParser() {
     objMap = new ObjectMapper();
+    objMap.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failUnknownProperties);
   }
 
 

@@ -6,8 +6,7 @@ import Develop.API.APIExceptions.ValidationException;
 import Develop.API.APIYandex;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.APIServices.ParamBuilder;
-import Develop.KeyManager.KeyManager;
-
+import Develop.KeyManager.KeyManagerWrapper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class Server {
   public Server(InputStream in, OutputStream out) {   // constructor
     reader = new BufferedReader(new InputStreamReader(in));
     writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
-    KeyManager keyManager = new KeyManager("APISheduleKey");
+    KeyManagerWrapper keyManager = new KeyManagerWrapper("APISheduleKey");
     try {
       api = new APIYandex(keyManager.getKey());
     } catch (ValidationException e) {
