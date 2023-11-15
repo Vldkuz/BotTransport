@@ -1,46 +1,65 @@
 package Develop.Telegram;
 
-import Develop.API.APIExceptions.HTTPClientException;
-import Develop.API.APIExceptions.ParserException;
-import Develop.API.APIExceptions.ValidationException;
-import Develop.API.APIObj.SheduleStation.SheduleStation;
-import Develop.API.APIServices.ParamBuilder;
+import Develop.Telegram.User.ParamAPI;
 import Develop.Telegram.User.Session;
 import Develop.Telegram.User.State;
 
 public class RequestHandler {
 
-  private Session session;
+    private Session session;
 
-  public RequestHandler(Session session) {
-    this.session = session;
-  }
+    public RequestHandler(Session session) {
+        this.session = session;
+    }
 
-  public String getAnswer(String request) {
-    State state = session.getState(); // Получили текущее состояние пользователя
+    public String getAnswer(String request) {
+        State state = session.getState(); // Получили текущее состояние пользователя
 
-    switch (state) {
-      case start -> {
-        session.setState(getNextState(request));
+        switch (state) {
+            case start -> {
+                session.setState(getNextState(request));
 
-        if (session.getState() == State.start) {
-          return "Что-то с командой";
-        }
+                if (session.getState() == State.start) {
+                    return "Что-то с командой";
+                }
 
-        if (session.getState() == State.waitDataSheduleStation) {
-          return "Введите код станции:";
-        }
+                if (session.getState() == State.waitDataSheduleStation) {
+                    return "Введите код станции:";
+                }
 
-      }
-      case waitDataShedule -> {
+                if (session.getState() == State.help) {
+                    session.setState(State.start);
+                    return "help code";
+                }
 
-      }
-      case waitDataSheduleStation -> {
-        session.setState(getNextState(request));
-        if (session.getState() == State.waitDataSheduleStation)
-          return "Введите код станции:";
+            }
+            case waitDataShedule -> {
 
-        StringBuilder answer = new StringBuilder("");
+            }
+            case waitDataSheduleStation -> {
+                session.setState(getNextState(request));
+                if (session.getState() == State.waitDataSheduleStation)
+                    return "Введите код станции:";
+
+
+//                try {
+//                    ParamBuilder param = new ParamBuilder();
+//                    param.setStation(request);
+//                    SheduleStation shedule = session.getApiUser().getSheduleStation(param);
+
+                ParamAPI paramAPI = new ParamAPI(request, session);
+                return TelegramFunctions.getDataSheduleStation(paramAPI);
+                    /*TelegramFunctions telegramFunctions = new TelegramFunctions();
+                    return telegramFunctions.getDataSheduleStation(shedule);*/
+//                } catch (ParserException e) {
+//
+//                } catch (ValidationException e) {
+//
+//                } catch (HTTPClientException e) {
+//                }
+
+
+        /*StringBuilder answer = new StringBuilder("");
         ParamBuilder param = new ParamBuilder();
         param.setStation(request);
 
@@ -71,43 +90,43 @@ public class RequestHandler {
           // Добавить обработку ошибок клиента
         } catch (ValidationException e) {
           // Добавить обработку ошибок валидации
+        }*/
+            }
+            case waitDataFollowList -> {
+
+            }
+            case waitDataNearStations -> {
+
+            }
+            case waitDataNearCity -> {
+
+            }
+            case waitDataInfoCarrier -> {
+
+            }
         }
-      }
-      case waitDataFollowList -> {
 
-      }
-      case waitDataNearStations -> {
-
-      }
-      case waitDataNearCity -> {
-
-      }
-      case waitDataInfoCarrier -> {
-
-      }
+        return "";
     }
 
-    return  "";
-  }
-
-  private State getNextState(String request) {
-    switch (request) {
-      case "bs":
-        return State.waitDataSheduleStation;
-      case "h", "help":
-        return State.help;
-      case "lot":
-        return State.waitDataFollowList;
-      case "fs":
-        return State.waitDataShedule;
-      case "ns":
-        return State.waitDataNearStations;
-      case "nc":
-        return State.waitDataNearCity;
-      case "ci":
-        return State.waitDataInfoCarrier;
-      default:
-        return State.start;
+    private State getNextState(String request) {
+        switch (request) {
+            case "bs", "/bs":
+                return State.waitDataSheduleStation;
+            case "h", "help", "/h", "/help":
+                return State.help;
+            case "lot", "/lot":
+                return State.waitDataFollowList;
+            case "fs", "/fs":
+                return State.waitDataShedule;
+            case "ns", "/ns":
+                return State.waitDataNearStations;
+            case "nc", "/nc":
+                return State.waitDataNearCity;
+            case "ci", "/ci":
+                return State.waitDataInfoCarrier;
+            default:
+                return State.start;
+        }
     }
-  }
 }
