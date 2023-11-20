@@ -48,7 +48,7 @@ public class RequestHandler {
 //                    SheduleStation shedule = session.getApiUser().getSheduleStation(param);
 
                 ParamAPI paramAPI = new ParamAPI(request, session);
-                return TelegramFunctions.getDataSheduleStation(/*paramAPI, */paramAPI.getStationTypeName(),paramAPI.getTitle(),paramAPI.getTransportType(),paramAPI.getThreadTitle(),paramAPI.getDays());
+                return TelegramFunctions.getDataSheduleStation(paramAPI/*, paramAPI.getStationTypeName(),paramAPI.getTitle(),paramAPI.getTransportType(),paramAPI.getThreadTitle(),paramAPI.getDays()*/);
                     /*TelegramFunctions telegramFunctions = new TelegramFunctions();
                     return telegramFunctions.getDataSheduleStation(shedule);*/
 //                } catch (ParserException e) {
