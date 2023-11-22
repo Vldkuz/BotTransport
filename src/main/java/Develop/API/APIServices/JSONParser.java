@@ -10,7 +10,7 @@ import java.time.Duration;
 
 public class JSONParser {
 
-  private ObjectMapper objMap;
+  private final ObjectMapper objMap;
   boolean failUnknownProperties = false;
 
   public JSONParser(boolean failUnknownProperties) {

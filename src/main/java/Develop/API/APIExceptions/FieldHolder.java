@@ -2,8 +2,8 @@ package Develop.API.APIExceptions;
 
 public class FieldHolder {
 
-  private String errorField;
-  private String fieldValue;
+  private final String errorField;
+  private final String fieldValue;
 
   public FieldHolder(String errorField, String fieldValue) {
     this.errorField = errorField;

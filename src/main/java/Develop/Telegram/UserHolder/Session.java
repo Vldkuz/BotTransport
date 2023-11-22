@@ -2,14 +2,14 @@ package Develop.Telegram.UserHolder;
 
 import Develop.API.APIExceptions.ValidationException;
 import Develop.API.APIYandex;
-import Develop.KeyManager.KeyManagerWrapper;
 
 public class Session {
 
   private State state = State.start; // Характеризует одно из состояний пользователя в enum (Будет выгружаться в БД)
-  private InfoHolder infoHolder = new InfoHolder(); // В info будут лежать все данные по пользователю (Будет выгружаться в БД)
-  private APIYandex api; // Объект, которые предоставляет функции взаимодействия с API
+  private final InfoHolder infoHolder = new InfoHolder(); // В info будут лежать все данные по пользователю (Будет выгружаться в БД)
+  final private APIYandex api; // Объект, которые предоставляет функции взаимодействия с API
   private int priority = 0; // Создается с максимальным приоритетом
+  private boolean blocked = false;
 
   public Session(String keyPointer) {
     try {
@@ -23,15 +23,11 @@ public class Session {
     return infoHolder;
   }
 
-  public void setInfoHolder(InfoHolder infoHolder) {
-    this.infoHolder = infoHolder;
-  }
-
   public State getState() {
     return state;
   }
 
-  public void setState(State state) {
+  public synchronized void setState(State state) {
     this.state = state;
   }
 
@@ -43,8 +39,14 @@ public class Session {
     return priority;
   }
 
-  public void setPriority(int priority) {
-    this.priority = priority;
+  public void addPriority() {this.priority++;}
+
+  public synchronized boolean isBlocked() {
+    return blocked;
+  }
+
+  public synchronized void setBlocked(boolean blocked) {
+    this.blocked = blocked;
   }
 }
 

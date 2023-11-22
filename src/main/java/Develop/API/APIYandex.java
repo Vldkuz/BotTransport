@@ -21,7 +21,7 @@ import java.util.List;
 
 public class APIYandex implements APIMethods {
 
-  private APIConnector APICon;
+  private final APIConnector APICon;
   private final ReqBuilder request;
   private JSONParser jsonParser;
 

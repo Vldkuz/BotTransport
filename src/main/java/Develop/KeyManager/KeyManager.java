@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils;
 
 public class KeyManager {
 
-  private String key;
+  private final String key;
 
   public KeyManager(String name) throws KeyManagerException {
     try {

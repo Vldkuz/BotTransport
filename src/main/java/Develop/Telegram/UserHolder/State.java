@@ -2,7 +2,6 @@ package Develop.Telegram.UserHolder;
 
 public enum State {
   start,
-  help,
   waitDataShedule,
   waitDataSheduleStation,
   waitDataFollowList,

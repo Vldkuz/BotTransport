@@ -1,10 +1,11 @@
 package Develop.Telegram.UserHolder;
 
-import java.util.Stack;
+import java.util.LinkedHashSet;
+
 
 public class InfoHolder {
   private String name;
-  private Stack<String> stationHolder = new Stack<>();
+  private final LinkedHashSet<String> stationHolder = new LinkedHashSet<>();
 
   public String getName() {
     return name;
@@ -13,19 +14,11 @@ public class InfoHolder {
   public void setName(String name) {
     this.name = name;
   }
-
-  public String popStation ()
-  {
-    return stationHolder.pop();
-  }
-
+  public String popStation() {return stationHolder.removeLast();}
+  public void pushStation(String station){stationHolder.addLast(station);}
   public boolean hasStation()
   {
-    return !stationHolder.empty();
-  }
-
-  public void pushStation(String station) {
-    stationHolder.push(station);
+    return !stationHolder.isEmpty();
   }
 
   // Вся информация по пользователю, включая топингу

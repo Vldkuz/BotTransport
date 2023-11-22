@@ -1,8 +1,8 @@
 package Develop.KeyManager;
 
 public class KeyManagerException extends Exception {
-  private String errorText;
-  private Exception exceptionCaused;
+  private final String errorText;
+  private final Exception exceptionCaused;
 
   public KeyManagerException(String errorText, Exception exceptionCaused)
   {

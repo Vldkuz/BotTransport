@@ -2,7 +2,7 @@ package Develop.API.APIExceptions;
 
 public class HTTPClientException extends Exception {
 
-  private String errorText;
+  private final String errorText;
   private Exception exceptionCaused = null;
 
   public HTTPClientException(String errorText, Exception exceptionCaused) {

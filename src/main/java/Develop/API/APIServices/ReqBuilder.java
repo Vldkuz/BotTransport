@@ -1,6 +1,5 @@
 package Develop.API.APIServices;
 
-import Develop.API.APIServices.ParamBuilder;
 import java.util.ArrayList;
 
 public class ReqBuilder {
@@ -16,7 +15,7 @@ public class ReqBuilder {
 
   public String addParams(ParamBuilder param) {
 
-    ArrayList<String> params = new ArrayList<String>();
+    ArrayList<String> params = new ArrayList<>();
 
     // Происходит разбор параметров, которые заключены в объекте.
     if (!param.getTo().isEmpty()) {
@@ -80,7 +79,7 @@ public class ReqBuilder {
   }
 
 
-  private String url;
+  private final String url;
   private String branch;
   private String request;
 }

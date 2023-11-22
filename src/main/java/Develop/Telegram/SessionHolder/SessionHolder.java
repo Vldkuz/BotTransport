@@ -3,7 +3,7 @@ package Develop.Telegram.SessionHolder;
 import Develop.Telegram.UserHolder.Session;
 
 public class SessionHolder {
-  private SessionUploader sessionUploader;
+  private final SessionUploader sessionUploader;
   public SessionHolder(String keyAPIYandex) {
     sessionUploader = new SessionUploader(keyAPIYandex);
     sessionUploader.start();
