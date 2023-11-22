@@ -40,9 +40,10 @@ public class TelegramBot extends TelegramLongPollingBot {
       }
 
       RequestHandler requestHandler = new RequestHandler(currentSession);
-      request = requestHandler.getAnswer(request);
+      String answer = requestHandler.getAnswer(request);
 
-      SendMessage sendMessage = new SendMessage(chatId.toString(),request);
+
+      SendMessage sendMessage = new SendMessage(chatId.toString(),answer);
 
       try {
         execute(sendMessage);
