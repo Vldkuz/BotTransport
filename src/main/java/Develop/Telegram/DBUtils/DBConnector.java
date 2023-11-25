@@ -16,7 +16,7 @@ public class DBConnector {
   {
     try {
       Class.forName("org.postgresql.Driver");
-      connectDB = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbName);
+      connectDB = DriverManager.getConnection("jdbc:postgresql://"+System.getenv("DATABASE_URL") +":" + System.getenv("PORT_DB") + "/" + dbName, System.getenv("USER_DB"),System.getenv("USER_PASSWD"));
       if (connectDB == null) {
         System.err.println("Не удалось подключится к БД");
       }

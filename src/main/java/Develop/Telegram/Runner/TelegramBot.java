@@ -1,6 +1,7 @@
 package Develop.Telegram.Runner;
 
-import Develop.KeyManager.KeyManagerWrapper;
+import static java.lang.System.getenv;
+
 import Develop.Telegram.RequestHandler;
 import Develop.Telegram.SessionHolder.SessionHolder;
 import Develop.Telegram.UserHolder.Session;
@@ -11,8 +12,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TelegramBot extends TelegramLongPollingBot {
-  private final KeyManagerWrapper keyHolderTelegram = new KeyManagerWrapper("/APITelegramKey");
-  private final SessionHolder sessionHolder = new SessionHolder(new KeyManagerWrapper("/APISheduleKey").getKey());
+
+  private final String keyTelegram = getenv("KEY_TELEGRAM");
+  private final SessionHolder sessionHolder = new SessionHolder(getenv("KEY_YANDEX"));
   @Override
   public String getBotUsername() {
     return "MainTransport_bot";
@@ -20,7 +22,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
   @Override
   public String getBotToken() {
-    return keyHolderTelegram.getKey();
+    return keyTelegram;
   }
 
   @Override

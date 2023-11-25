@@ -1,11 +1,11 @@
 package Develop.Telegram.UserHolder;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 
 public class InfoHolder {
   private String name;
-  private final LinkedHashSet<String> stationHolder = new LinkedHashSet<>();
+  private final LinkedList<String> stationHolder = new LinkedList<>();
 
   public String getName() {
     return name;
@@ -15,7 +15,7 @@ public class InfoHolder {
     this.name = name;
   }
   public String popStation() {return stationHolder.removeLast();}
-  public void pushStation(String station){stationHolder.addLast(station);}
+  public void pushStation(String station){if (!stationHolder.contains(station)) {stationHolder.addLast(station);}}
   public boolean hasStation()
   {
     return !stationHolder.isEmpty();
