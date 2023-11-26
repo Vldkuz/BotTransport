@@ -1,4 +1,4 @@
-package Develop.Telegram.User;
+package Develop.Telegram.UserHolder;
 
 import Develop.API.APIExceptions.HTTPClientException;
 import Develop.API.APIExceptions.ParserException;
