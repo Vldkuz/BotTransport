@@ -2,7 +2,6 @@ package Develop.Telegram.UserHolder;
 
 import java.util.LinkedList;
 
-
 public class InfoHolder {
   private String name;
   private final LinkedList<String> stationHolder = new LinkedList<>();
