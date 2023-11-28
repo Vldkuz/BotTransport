@@ -2,13 +2,13 @@ package Develop.Telegram.UserHolder;
 
 public enum State {
   start,
-  waitDataShedule,
-  waitDataSheduleStation,
-  waitDataFollowList,
-  waitDataNearStations,
-  waitDataNearCity,
-  waitDataInfoCarrier,
-  waitRecentStations
+  waitSource,
+  waitDestination,
+  waitSheduleStation,
+  waitFollowList,
+  waitNearStations,
+  waitNearCity,
+  waitCarrier,
 }
 
 /*

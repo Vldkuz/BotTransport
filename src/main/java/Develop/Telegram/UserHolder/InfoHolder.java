@@ -5,6 +5,8 @@ import java.util.LinkedList;
 public class InfoHolder {
   private String name;
   private final LinkedList<String> stationHolder = new LinkedList<>();
+  private String lastSource;
+  private String lastDestination;
 
   public String getName() {
     return name;
@@ -18,6 +20,22 @@ public class InfoHolder {
   public boolean hasStation()
   {
     return !stationHolder.isEmpty();
+  }
+
+  public String getLastSource() {
+    return lastSource;
+  }
+
+  public void setLastSource(String lastSource) {
+    this.lastSource = lastSource;
+  }
+
+  public String getLastDestination() {
+    return lastDestination;
+  }
+
+  public void setLastDestination(String lastDestination) {
+    this.lastDestination = lastDestination;
   }
 
   // Вся информация по пользователю, включая топингу
