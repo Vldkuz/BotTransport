@@ -31,7 +31,7 @@ public class ParamAPI {
 
             answer.add(firstStr.toString());
 
-            for (int i = 0; i < shedule.getSchedule().size(); ++i) {
+            for (int i = 0; i < 3/*shedule.getSchedule().size()*/; ++i) {
                 StringBuilder ansPart = new StringBuilder();
                 ansPart.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle() + "\n");
                 ansPart.append("даты отъезда:\t" + shedule.getSchedule().get(i).getDays() + "\n");
@@ -40,6 +40,8 @@ public class ParamAPI {
 
                 answer.add(ansPart.toString());
             }
+
+            session.getInfoHolder().pushStation(request);
 
         } catch (ParserException e) {
             answer.add("Произошла ошибка парсера");
@@ -53,63 +55,3 @@ public class ParamAPI {
 
     }
 }
-//    public ParamAPI(String request, Session session, String nameOfFunction) {
-//        param = new ParamBuilder();
-//        try {
-//            switch (nameOfFunction) {
-//                case "waitDataSheduleStation":
-//                    param.setStation(request);
-//                    SheduleStation shedule = session.getApiUser().getSheduleStation(param);
-//                case "waitDataShedule":
-//
-//                    SheduleBetStation shedule2 = session.getApiUser().getShedule(param);
-//            }
-//
-//        } catch (HTTPClientException e) {
-//            throw new RuntimeException(e);
-//        } catch (ParserException e) {
-//            throw new RuntimeException(e);
-//        } catch (ValidationException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    public SheduleStation getParamAPIShedule() {
-//        return shedule;
-//    }
-//
-//    public String getStationTypeName() {
-//        return shedule.getStation().getStationTypeName();
-//    }
-//
-//    public String getTitle() {
-//        return shedule.getStation().getTitle();
-//    }
-//
-//    public String getTransportType() {
-//        return shedule.getStation().getTransportType();
-//    }
-//
-//    public List<String> getThreadTitle() {
-//        List<String> title = new ArrayList<>();
-//        for (int i = 0; i < 3; ++i) {
-//            title.add(shedule.getSchedule().get(i).getThread().getTitle());
-//        }
-//        return title;
-//    }
-//
-//    public List<String> getDays() {
-//        List<String> title = new ArrayList<>();
-//        for (int i = 0; i < 3; ++i) {
-//            title.add(shedule.getSchedule().get(i).getDays());
-//        }
-//        return title;
-//    }
-//
-//    public int getSheduleSize() {
-//        return shedule.getSchedule().size();
-//    }
-
-//    public
-
-//paramAPI.getParamAPIShedule().getSchedule().get(i).getThread().getTitle()

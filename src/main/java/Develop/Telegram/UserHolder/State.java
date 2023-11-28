@@ -8,6 +8,7 @@ public enum State {
   waitDataNearStations,
   waitDataNearCity,
   waitDataInfoCarrier,
+  waitRecentStations
 }
 
 /*
