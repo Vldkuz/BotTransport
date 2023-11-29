@@ -4,11 +4,11 @@ import Develop.API.APIExceptions.HTTPClientException;
 import Develop.API.APIExceptions.ParserException;
 import Develop.API.APIExceptions.ValidationException;
 import Develop.API.APIObj.SheduleBetStation.SheduleBetStation;
-import Develop.API.APIObj.SheduleStation.Shedule;
 import Develop.API.APIObj.SheduleStation.SheduleStation;
 import Develop.API.APIServices.ParamBuilder;
 import Develop.API.APIYandex;
 import Develop.Telegram.UserHolder.Session;
+
 import java.util.Queue;
 
 public class ParamAPI {
@@ -52,8 +52,7 @@ public class ParamAPI {
         }
     }
 
-    public static void getShedule(Session session, Queue<String> answer)
-    {
+    public static void getShedule(Session session, Queue<String> answer) {
         APIYandex api = session.getApiUser();
 
         ParamBuilder params = new ParamBuilder();
@@ -63,9 +62,22 @@ public class ParamAPI {
         try {
             SheduleBetStation shedule = api.getShedule(params);
             // Парсинг объекта shedule Ceмен :)
+            // Понял тебя Владислав ☺
+            StringBuilder startPart = new StringBuilder("");
+            startPart.append(shedule.getSearch().getFrom().getTitle() + "(" + shedule.getSearch().getFrom().getCode() +
+                    ")" + "\n\t->\n" + shedule.getSearch().getTo().getTitle() + "("
+                    + shedule.getSearch().getTo().getCode() + ")");
 
+            answer.add(String.valueOf(startPart));
 
-
+            for (int i = 0; i < shedule.getSegments().size(); ++i) {
+                StringBuilder endPart = new StringBuilder();
+                endPart.append("Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");
+                endPart.append("Время прибытия: " + shedule.getSegments().get(i).getArrival() + "\n");
+                endPart.append("Ваш маршрут " + shedule.getSegments().get(i).getThread().getTitle() + "\n");
+                endPart.append("Тип транспорта " + shedule.getSegments().get(i).getThread().getTransportType() + "\n");
+                endPart.append("Тип билета и его кашерность " + shedule.getSegments().get(i).getTicketsInfo().getPlaces().get(0).getName() + "\n" + shedule.getSegments().get(i).getTicketsInfo().getPlaces().get(0).getPrice().getWhole() + "\n");
+            }
 
 
         } catch (HTTPClientException e) {
@@ -77,11 +89,14 @@ public class ParamAPI {
         }
     }
 
-    public static boolean validateStation(String station, Session session)
-    {
+    public static boolean validateStation(String station, Session session) {
         ParamBuilder paramSt = new ParamBuilder();
         paramSt.setStation(station);
-        try {session.getApiUser().getSheduleStation(paramSt);} catch (HTTPClientException  | ParserException  | ValidationException e) {return false;}
+        try {
+            session.getApiUser().getSheduleStation(paramSt);
+        } catch (HTTPClientException | ParserException | ValidationException e) {
+            return false;
+        }
         return true;
     }
 }

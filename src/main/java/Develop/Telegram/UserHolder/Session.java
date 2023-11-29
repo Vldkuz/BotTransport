@@ -1,7 +1,14 @@
 package Develop.Telegram.UserHolder;
 
+import Develop.API.APIExceptions.HTTPClientException;
+import Develop.API.APIExceptions.ParserException;
 import Develop.API.APIExceptions.ValidationException;
+import Develop.API.APIObj.NearStations.Station;
+import Develop.API.APIServices.ParamBuilder;
 import Develop.API.APIYandex;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Session {
 
@@ -29,6 +36,27 @@ public class Session {
 
   public synchronized void setState(State state) {
     this.state = state;
+  }
+
+  public List<String>  getN_LastStation(String latitudeint,String longitude,int distance, int n){
+    List<String> answer = new ArrayList<>();
+    ParamBuilder paramBuilder = new ParamBuilder();
+    paramBuilder.setLatitude(latitudeint);
+    paramBuilder.setLongitude(longitude);
+    paramBuilder.setDistance(String.valueOf(distance));
+    try {
+      List<Station> allStations = api.getNearStations(paramBuilder).getStations();
+      for (int i = 0; i < n; ++i){
+        answer.add(allStations.get(i).getCode());
+      }
+    } catch (HTTPClientException e) {
+      throw new RuntimeException(e);
+    } catch (ParserException e) {
+      throw new RuntimeException(e);
+    } catch (ValidationException e) {
+      throw new RuntimeException(e);
+    }
+    return  answer;
   }
 
   public APIYandex getApiUser() {

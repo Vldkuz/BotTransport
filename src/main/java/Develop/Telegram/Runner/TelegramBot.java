@@ -7,15 +7,12 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
@@ -87,6 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 // Создаем строку клавиатуры
                 KeyboardRow row = new KeyboardRow();
 
+
                 // Создаем кнопку
                 KeyboardButton button = new KeyboardButton();
                 button.setText("dgtrmep");
@@ -110,46 +108,43 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
             } else {
-                Queue<String> answer = requestHandler.getAnswer(request, update, 404.0,404.0);
+                Queue<String> answer = requestHandler.getAnswer(request, curSession);
                 sendMessageQueueString(chatId, answer);
             }
-        }
-        else if (update.hasCallbackQuery()){
+        } else if (update.hasCallbackQuery()) {
             String callbackData = update.getCallbackQuery().getData();
             long messageID = update.getCallbackQuery().getMessage().getMessageId();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
 
-            if(callbackData.equals("s9600213")){
+            if (callbackData.equals("s9600213")) {
                 String text = "s9600213";
                 EditMessageText message = new EditMessageText();
                 message.setChatId(String.valueOf(chatId));
                 message.setText(text);
-                message.setMessageId((int)messageID);
+                message.setMessageId((int) messageID);
                 try {
                     execute(message);
                 } catch (TelegramApiException ignored) {
                 }
-            }
-            else if (callbackData.equals("s9600212")){
+            } else if (callbackData.equals("s9600212")) {
                 String text = "s9600212";
                 EditMessageText message = new EditMessageText();
                 message.setChatId(String.valueOf(chatId));
                 message.setText(text);
-                message.setMessageId((int)messageID);
+                message.setMessageId((int) messageID);
                 try {
                     execute(message);
                 } catch (TelegramApiException ignored) {
                 }
             }
-        }
-        else if(update.hasMessage()) {
+        } else if (update.hasMessage()) {
             Double latitude = update.getMessage().getLocation().getLatitude();
-            Double longitude =  update.getMessage().getLocation().getLongitude();
+            Double longitude = update.getMessage().getLocation().getLongitude();
 
             String chatId = String.valueOf(update.getMessage().getChatId());
             Session curSession = sessionHolder.get(chatId);
             RequestHandler requestHandler = new RequestHandler(curSession);
-            Queue<String> answer = requestHandler.getAnswer("request", update, latitude,longitude);
+            Queue<String> answer = requestHandler.getAnswer("request", curSession);
             sendMessageQueueString(chatId, answer);
         }
     }
