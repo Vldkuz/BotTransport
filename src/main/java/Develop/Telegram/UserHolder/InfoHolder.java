@@ -1,6 +1,8 @@
 package Develop.Telegram.UserHolder;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class InfoHolder {
   private String name;
@@ -20,6 +22,19 @@ public class InfoHolder {
   public boolean hasStation()
   {
     return !stationHolder.isEmpty();
+  }
+
+  public List<String> getLastStation(int n) {
+    List<String> list = new ArrayList<String>(n);
+
+    while (!stationHolder.isEmpty() & n > 0)
+    {
+      String station = stationHolder.removeLast();
+      list.add(station);
+      n--;
+    }
+
+    return list;
   }
 
   public String getLastSource() {

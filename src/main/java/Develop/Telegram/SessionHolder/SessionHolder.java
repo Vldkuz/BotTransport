@@ -8,6 +8,5 @@ public class SessionHolder {
     sessionUploader = new SessionUploader(keyAPIYandex);
     sessionUploader.start();
   }
-  public Session get(String chatId) {return sessionUploader.get(chatId);}
-  public void put(String chatId, Session curSession) {sessionUploader.put(chatId,curSession);}
+  public Session get(String chatId) {return sessionUploader.getORremoveAtomic(chatId,false);}
 }

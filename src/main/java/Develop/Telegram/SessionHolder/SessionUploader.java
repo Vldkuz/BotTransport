@@ -3,14 +3,15 @@ package Develop.Telegram.SessionHolder;
 import Develop.Telegram.DBUtils.DBConnector;
 import Develop.Telegram.UserHolder.Session;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Set;
+import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionUploader extends Thread {
 
   private boolean needUpload;
   private String APIYandexKey;
-  private final HashMap<String, Session> activeSessionHolder = new HashMap<>();
+  private final ConcurrentHashMap<String, Session> activeSessionHolder = new ConcurrentHashMap<>();
 
   public SessionUploader(String APIYandexKey) {
     needUpload = true;
@@ -33,39 +34,39 @@ public class SessionUploader extends Thread {
   public void run() {
     while (needUpload) {
       // Получим список всех ключей
-      Set<String> keys = activeSessionHolder.keySet();
+
       String sessionVictim = null;
 
       int minDescriptor = Integer.MAX_VALUE; // Будем искать минимум, а при запросе прибавлять к приоритету ;
 
-      for (String key : keys) {
-        int curDescriptor = activeSessionHolder.get(key).getPriority();
+      for (Map.Entry<String, Session> entry : activeSessionHolder.entrySet()) {
+        Session curSession = entry.getValue();
+        int curDescriptor = curSession.getPriority();
+
 
         if (curDescriptor < minDescriptor) {
           minDescriptor = curDescriptor;
-          sessionVictim = key;
+          sessionVictim = entry.getKey();
         }
       }
 
-      if (sessionVictim != null) {
-        Session sessionToUp = activeSessionHolder.get(sessionVictim);
+      if (sessionVictim != null ) {
+        DBConnector dbConnector = new DBConnector("Session");
+        dbConnector.createTableSessions("UserInfo");
 
-        if  (!sessionToUp.isBlocked()) {
-          DBConnector dbConnector = new DBConnector("Session");
-          dbConnector.createTableSessions("UserInfo");
+        Session sessVict = getORremoveAtomic(sessionVictim,true);
 
-          Session sessVict = remove(sessionVictim);
+        boolean isInDB = false;
+        try {
+          isInDB = dbConnector.checkChatId("UserInfo", sessionVictim);
+        } catch (SQLException e) {
+          System.err.println("Не удалось проверить в БД");
+        }
 
-          boolean isInDB = false;
-          try {
-            isInDB = dbConnector.checkChatId("UserInfo", sessionVictim);
-          } catch (SQLException e) {System.err.println("Не удалось проверить в БД");}
-
-          if (isInDB) {
-            dbConnector.updateData("UserInfo", sessVict, sessionVictim);
-          } else {
-            dbConnector.insertRowSession("UserInfo", sessVict, sessionVictim);
-          }
+        if (isInDB) {
+          dbConnector.updateData("UserInfo", sessVict, sessionVictim);
+        } else {
+          dbConnector.insertRowSession("UserInfo", sessVict, sessionVictim);
         }
       }
 
@@ -77,47 +78,50 @@ public class SessionUploader extends Thread {
     }
   }
 
-  public synchronized Session get(String chatId) {
-    if (activeSessionHolder.get(chatId) != null) {
-      Session session = activeSessionHolder.get(chatId);
-      session.addPriority();
-      session.setBlocked(true);
-      return session;
+
+  public synchronized Session getORremoveAtomic(String chatId, boolean needRemove) {
+
+    if (needRemove) {
+      Session curSession = activeSessionHolder.get(chatId);
+
+      while (curSession.getBlocked()) {
+        try {Thread.sleep(10);} catch (InterruptedException ignored) {Thread.currentThread().interrupt();}
+      }
+
+      return activeSessionHolder.remove(chatId);
     }
 
-    DBConnector dbConnector = new DBConnector("Session");
-    dbConnector.createTableSessions("UserInfo");
+    Session curSession = null;
 
-    boolean ans = false;
-    try {
-      ans = dbConnector.checkChatId("UserInfo", chatId);}
-    catch (SQLException e) {System.err.println("Не удалось подключиться к БД");}
+    if (activeSessionHolder.containsKey(chatId)) {
+      curSession = activeSessionHolder.get(chatId);
+      curSession.addPriority();
+    } else {
+      DBConnector dbConnector = new DBConnector("Session");
+      dbConnector.createTableSessions("UserInfo");
 
-    if (ans) {
-      Session session  = dbConnector.readData("UserInfo", chatId, APIYandexKey);
-      session.setBlocked(true);
-      put(chatId,session);
-      return session;
+      boolean ans = false;
+      try {
+        ans = dbConnector.checkChatId("UserInfo", chatId);
+      } catch (SQLException e) {
+        System.err.println("Не удалось подключиться к БД");
+      }
+
+      if (ans) {
+        curSession = dbConnector.readData("UserInfo", chatId, APIYandexKey);
+        activeSessionHolder.put(chatId, curSession);
+      }
     }
 
-    Session curSession = new Session(APIYandexKey);
-    curSession.setBlocked(true);
-    put(chatId, curSession);
+    if (curSession != null)
+      return curSession;
 
+    curSession = new Session(APIYandexKey);
+    activeSessionHolder.put(chatId, curSession);
     return curSession;
   }
 
-
-  public synchronized void put(String chatId, Session session) {
-    activeSessionHolder.put(chatId, session);
-  }
-
-  public synchronized Session remove(String chatId)
-  {
-    return activeSessionHolder.remove(chatId);
-  }
-
   public void uploadALLtoDatabase() {
-
+    // Выгрузка всего в бд, если что-то пошло не так, то поток экстренно будится
   }
 }

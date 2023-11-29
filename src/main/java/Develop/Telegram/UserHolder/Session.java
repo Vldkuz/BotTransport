@@ -1,14 +1,9 @@
 package Develop.Telegram.UserHolder;
 
-import Develop.API.APIExceptions.HTTPClientException;
-import Develop.API.APIExceptions.ParserException;
 import Develop.API.APIExceptions.ValidationException;
-import Develop.API.APIObj.NearStations.Station;
-import Develop.API.APIServices.ParamBuilder;
 import Develop.API.APIYandex;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Session {
 
@@ -16,7 +11,7 @@ public class Session {
   private final InfoHolder infoHolder = new InfoHolder(); // В info будут лежать все данные по пользователю (Будет выгружаться в БД)
   final private APIYandex api; // Объект, которые предоставляет функции взаимодействия с API
   private int priority = 0; // Создается с максимальным приоритетом
-  private boolean blocked = false;
+  private AtomicBoolean blocked = new AtomicBoolean(true);
 
   public Session(String keyPointer) {
     try {
@@ -26,6 +21,7 @@ public class Session {
       // При таком случае у нас недействительный API ключ в ресурсах, что говорит о том, что все функции программы недействительны
     }
   }
+
   public InfoHolder getInfoHolder() {
     return infoHolder;
   }
@@ -38,27 +34,6 @@ public class Session {
     this.state = state;
   }
 
-  public List<String>  getN_LastStation(String latitudeint,String longitude,int distance, int n){
-    List<String> answer = new ArrayList<>();
-    ParamBuilder paramBuilder = new ParamBuilder();
-    paramBuilder.setLatitude(latitudeint);
-    paramBuilder.setLongitude(longitude);
-    paramBuilder.setDistance(String.valueOf(distance));
-    try {
-      List<Station> allStations = api.getNearStations(paramBuilder).getStations();
-      for (int i = 0; i < n; ++i){
-        answer.add(allStations.get(i).getCode());
-      }
-    } catch (HTTPClientException e) {
-      throw new RuntimeException(e);
-    } catch (ParserException e) {
-      throw new RuntimeException(e);
-    } catch (ValidationException e) {
-      throw new RuntimeException(e);
-    }
-    return  answer;
-  }
-
   public APIYandex getApiUser() {
     return api;
   }
@@ -67,14 +42,16 @@ public class Session {
     return priority;
   }
 
-  public void addPriority() {this.priority++;}
-
-  public synchronized boolean isBlocked() {
-    return blocked;
+  public void addPriority() {
+    this.priority++;
   }
 
-  public synchronized void setBlocked(boolean blocked) {
-    this.blocked = blocked;
+  public boolean getBlocked() {
+    return blocked.get();
+  }
+
+  public void setBlocked(boolean value) {
+    blocked.set(value);
   }
 }
 

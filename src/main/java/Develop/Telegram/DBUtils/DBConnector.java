@@ -10,18 +10,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBConnector {
+
   public Connection connectDB;
 
-  public DBConnector(String dbName)
-  {
+  public DBConnector(String dbName) {
     try {
       Class.forName("org.postgresql.Driver");
-      connectDB = DriverManager.getConnection("jdbc:postgresql://"+System.getenv("DATABASE_URL") +":" + System.getenv("PORT_DB") + "/" + dbName, System.getenv("USER_DB"),System.getenv("USER_PASSWD"));
+      connectDB = DriverManager.getConnection(
+          "jdbc:postgresql://" + System.getenv("DATABASE_URL") + ":" + System.getenv("PORT_DB")
+              + "/" + dbName, System.getenv("USER_DB"), System.getenv("USER_PASSWD"));
       if (connectDB == null) {
         System.err.println("Не удалось подключится к БД");
       }
-    }
-    catch (Exception exception) {
+    } catch (Exception exception) {
       System.err.println("Произошла ошибка при подключении к БД");
       throw new RuntimeException("Ошибка при подключении к БД");
     }
@@ -31,8 +32,9 @@ public class DBConnector {
     Statement statement;
 
     try {
-      String query = "create table if not exists " + tableName
-          + " ( name text, chatID text, CONSTRAINT chatID unique (chatID), stations text[], state text);";
+      String query = String.format(
+          "create table if not exists %s ( name text, chatID text, CONSTRAINT chatID unique (chatID), stations text[], state text, lastSource text, lastDestination text);",
+          tableName);
       statement = connectDB.createStatement();
       statement.executeUpdate(query);
     } catch (SQLException e) {
@@ -49,10 +51,15 @@ public class DBConnector {
       stackStations += "'" + session.getInfoHolder().popStation() + "', ";
     }
 
-    if (!stackStations.isEmpty()) stackStations = stackStations.substring(0, stackStations.length() - 2);
+    if (!stackStations.isEmpty()) {
+      stackStations = stackStations.substring(0, stackStations.length() - 2);
+    }
 
-
-    String query = "insert into " + tableName + " (name, chatID, stations, state) values (" + session.getInfoHolder().getName() + " ," + "'" + chatId + "'" + ", " + "ARRAY [" + stackStations + "]::text[], '" + session.getState() + "' )";
+    String query = String.format(
+        "insert into %s (name, chatID, stations, state, lastSource, lastDestination) values "
+            + "(%s , '%s', ARRAY [%s]::text[], '%s', '%s', '%s' )",
+        tableName, session.getInfoHolder().getName(), chatId, stackStations, session.getState(),
+        session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination());
 
     try {
       statement = connectDB.createStatement();
@@ -62,23 +69,29 @@ public class DBConnector {
     }
   }
 
-  public void updateData (String tableName, Session session, String chatId)
-  {
+  public void updateData(String tableName, Session session, String chatId) {
     Statement statement;
     String stackStations = "";
 
-    while (session.getInfoHolder().hasStation()) {stackStations += "'" + session.getInfoHolder().popStation() + "', ";}
+    while (session.getInfoHolder().hasStation()) {
+      stackStations += "'" + session.getInfoHolder().popStation() + "', ";
+    }
 
-    if (!stackStations.isEmpty())
-      stackStations = stackStations.substring(0,stackStations.length() - 2);
+    if (!stackStations.isEmpty()) {
+      stackStations = stackStations.substring(0, stackStations.length() - 2);
+    }
 
-    String query =
-        "update " + tableName + " set name = '" + session.getInfoHolder().getName() + "'" + ", stations = " + "ARRAY [" + stackStations + "]::text[] ," + "state = '" + session.getState() + "'" + " where chatID = " +  "'" + chatId + "'";
-
+    String query = String.format(
+        "update %s set name = '%s', stations = ARRAY [%s]::text[], state = '%s', lastSource = '%s', lastDestination = '%s' where chatID = '%s'",
+        tableName, session.getInfoHolder().getName(), stackStations, session.getState(),
+        session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination(),
+        chatId);
     try {
       statement = connectDB.createStatement();
       statement.executeUpdate(query);
-    } catch (SQLException e) {System.err.println("Не удалось добавить запись в БД");}
+    } catch (SQLException e) {
+      System.err.println("Не удалось добавить запись в БД");
+    }
 
   }
 
@@ -88,12 +101,14 @@ public class DBConnector {
     Session curSession = new Session(keyAPIYandex);
 
     try {
-      String query = "select * from " + tableName + " where chatID = '" + chatId + "';";
+      String query = String.format("select * from %s where chatID = '%s';", tableName, chatId);
       statement = connectDB.createStatement();
       res = statement.executeQuery(query);
 
       res.next();
       curSession.getInfoHolder().setName(res.getString("name"));
+      curSession.getInfoHolder().setLastSource(res.getString("lastSource"));
+      curSession.getInfoHolder().setLastDestination(res.getString("lastDestination"));
 
       Array stationsDB = res.getArray("stations");
       String[] array = (String[]) stationsDB.getArray();
@@ -103,7 +118,6 @@ public class DBConnector {
         curSession.getInfoHolder().pushStation(array[idx]);
         ++idx;
       }
-
 
       curSession.setState(State.valueOf(res.getString("state")));
 
@@ -119,7 +133,8 @@ public class DBConnector {
     Statement statement;
     ResultSet res = null;
 
-    String query = "select exists (select chatID from " + tableName + " where chatID = '" + chatId + "')";
+    String query = String.format("select exists (select chatID from %s where chatID = '%s')",
+        tableName, chatId);
     statement = connectDB.createStatement();
     res = statement.executeQuery(query);
     res.next();
