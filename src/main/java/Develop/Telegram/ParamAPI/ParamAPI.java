@@ -53,7 +53,7 @@ public class ParamAPI {
 
     answer.add(firstStr.toString());
 
-    for (int i = 0; i < shedule.getSchedule().size(); ++i) {
+    for (int i = 0; i < 3/*shedule.getSchedule().size()*/; ++i) {
       StringBuilder ansPart = new StringBuilder();
       ansPart.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle() + "\n");
       ansPart.append(
@@ -87,7 +87,7 @@ public class ParamAPI {
 
       answer.add(String.valueOf(startPart));
 
-      for (int i = 0; i < shedule.getSegments().size(); ++i) {
+      for (int i = 0; i < 3/*shedule.getSegments().size()*/; ++i) {
         StringBuilder endPart = new StringBuilder();
         endPart.append(
             "Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");

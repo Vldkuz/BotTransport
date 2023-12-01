@@ -2,6 +2,7 @@ package Develop.Telegram.Runner;
 
 import Develop.Telegram.RequestHandler;
 import Develop.Telegram.SessionHolder.SessionHolder;
+import Develop.Telegram.UserHolder.InfoHolder;
 import Develop.Telegram.UserHolder.Session;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -45,11 +46,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             String request = update.getMessage().getText();
             if (!request.equals("/rs")) {
                 answer = requestHandler.getAnswer(request, curSession);
-            }
-            else {
-                sendButtonMessage(update.getMessage().getChatId());
+            } else {
+                sendButtonMessage(update.getMessage().getChatId(), curSession.getInfoHolder());
                 answer = new LinkedList<>();
-                answer.add("12");
+                answer.add("");
                 curSession.setBlocked(false);
             }
         }
@@ -69,42 +69,74 @@ public class TelegramBot extends TelegramLongPollingBot {
     // В зависимости от состояния пользователя вызывается функция с API и происходит парсинг объекта и ответ при помощи бизнес логики
     // Затем это сообщение должно отсылаться телеграмом просто как поток байт, который ничего не знает о бизнес логике
 
-    private void sendButtonMessage(Long  chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Недавние станции отображены под Вашей строкой");
 
-        // Создаем клавиатуру
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        message.setReplyMarkup(keyboardMarkup);
+
+
+
+
+
+
+
+
+
+    private void sendButtonMessage(Long chatId, InfoHolder infoHolder) {
         Session curSession = sessionHolder.get(String.valueOf(chatId));
-        // Создаем список строк клавиатуры
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        List<String> lastStation = curSession.getInfoHolder().getLastStation(1);
-        for (int i = 0; i < 1; i++) {
-            // Создаем строку клавиатуры
-            KeyboardRow row = new KeyboardRow();
+        List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
 
-            // Создаем кнопку
-            KeyboardButton button = new KeyboardButton();
-            button.setText(lastStation.get(i));
-
-            // Добавляем кнопку в строку
-            row.add(button);
-
-            // Добавляем строку в список
-            keyboard.add(row);
+        if (lastStation.size() == 0 ){
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText("Вы не ввели ни одной станции");
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+//            curSession.setBlocked(false);
         }
+        else {
 
-        // Привязываем список к клавиатуре
-        keyboardMarkup.setKeyboard(keyboard);
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText("Недавние станции отображены под Вашей строкой");
 
-        // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
-        keyboardMarkup.setOneTimeKeyboard(true);
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+            // Создаем клавиатуру
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            message.setReplyMarkup(keyboardMarkup);
+
+//        Session curSession = sessionHolder.get(String.valueOf(chatId));
+            // Создаем список строк клавиатуры
+
+
+            List<KeyboardRow> keyboard = new ArrayList<>();
+//            List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
+
+            for (int i = 0; i < lastStation.size(); i++) {
+                // Создаем строку клавиатуры
+                KeyboardRow row = new KeyboardRow();
+
+                // Создаем кнопку
+                KeyboardButton button = new KeyboardButton();
+                button.setText(lastStation.get(i));
+
+                // Добавляем кнопку в строку
+                row.add(button);
+
+                // Добавляем строку в список
+                keyboard.add(row);
+            }
+
+            // Привязываем список к клавиатуре
+            keyboardMarkup.setKeyboard(keyboard);
+
+            // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
+            keyboardMarkup.setOneTimeKeyboard(true);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+//            curSession.setBlocked(false);
         }
     }
 
@@ -123,31 +155,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //        SendMessage sendMessage = new SendMessage();

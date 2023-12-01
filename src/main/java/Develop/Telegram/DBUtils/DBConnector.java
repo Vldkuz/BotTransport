@@ -17,8 +17,8 @@ public class DBConnector {
     try {
       Class.forName("org.postgresql.Driver");
       connectDB = DriverManager.getConnection(
-          "jdbc:postgresql://" + System.getenv("DATABASE_URL") + ":" + System.getenv("PORT_DB")
-              + "/" + dbName, System.getenv("USER_DB"), System.getenv("USER_PASSWD"));
+              "jdbc:postgresql://" + System.getenv("DATABASE_URL") + ":" + System.getenv("PORT_DB")
+                      + "/" + dbName, System.getenv("USER_DB"), System.getenv("USER_PASSWD"));
       if (connectDB == null) {
         System.err.println("Не удалось подключится к БД");
       }
@@ -33,8 +33,8 @@ public class DBConnector {
 
     try {
       String query = String.format(
-          "create table if not exists %s ( name text, chatID text, CONSTRAINT chatID unique (chatID), stations text[], state text, lastSource text, lastDestination text);",
-          tableName);
+              "create table if not exists %s ( name text, chatID text, CONSTRAINT chatID unique (chatID), stations text[], state text, lastSource text, lastDestination text);",
+              tableName);
       statement = connectDB.createStatement();
       statement.executeUpdate(query);
     } catch (SQLException e) {
@@ -43,7 +43,7 @@ public class DBConnector {
   }
 
   public void insertRowSession(String tableName, Session session,
-      String chatId) {
+                               String chatId) {
     Statement statement;
     String stackStations = "";
 
@@ -56,10 +56,10 @@ public class DBConnector {
     }
 
     String query = String.format(
-        "insert into %s (name, chatID, stations, state, lastSource, lastDestination) values "
-            + "(%s , '%s', ARRAY [%s]::text[], '%s', '%s', '%s' )",
-        tableName, session.getInfoHolder().getName(), chatId, stackStations, session.getState(),
-        session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination());
+            "insert into %s (name, chatID, stations, state, lastSource, lastDestination) values "
+                    + "(%s , '%s', ARRAY [%s]::text[], '%s', '%s', '%s' )",
+            tableName, session.getInfoHolder().getName(), chatId, stackStations, session.getState(),
+            session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination());
 
     try {
       statement = connectDB.createStatement();
@@ -82,10 +82,10 @@ public class DBConnector {
     }
 
     String query = String.format(
-        "update %s set name = '%s', stations = ARRAY [%s]::text[], state = '%s', lastSource = '%s', lastDestination = '%s' where chatID = '%s'",
-        tableName, session.getInfoHolder().getName(), stackStations, session.getState(),
-        session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination(),
-        chatId);
+            "update %s set name = '%s', stations = ARRAY [%s]::text[], state = '%s', lastSource = '%s', lastDestination = '%s' where chatID = '%s'",
+            tableName, session.getInfoHolder().getName(), stackStations, session.getState(),
+            session.getInfoHolder().getLastSource(), session.getInfoHolder().getLastDestination(),
+            chatId);
     try {
       statement = connectDB.createStatement();
       statement.executeUpdate(query);
@@ -129,12 +129,12 @@ public class DBConnector {
   }
 
   public boolean checkChatId(String tableName, String chatId)
-      throws SQLException {
+          throws SQLException {
     Statement statement;
     ResultSet res = null;
 
     String query = String.format("select exists (select chatID from %s where chatID = '%s')",
-        tableName, chatId);
+            tableName, chatId);
     statement = connectDB.createStatement();
     res = statement.executeQuery(query);
     res.next();
