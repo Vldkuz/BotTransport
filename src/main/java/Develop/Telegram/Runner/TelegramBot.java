@@ -37,21 +37,24 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        SendMessage sendMessage = new SendMessage();
+
         String chatId = String.valueOf(update.getMessage().getChatId());
         Session curSession = sessionHolder.get(chatId);
         RequestHandler requestHandler = new RequestHandler(curSession);
-        Queue<String> answer = null;
+        Queue<SendMessage> answer = null;
 
         if (update.getMessage().hasText()) {
             String request = update.getMessage().getText();
-            if (!request.equals("/rs")) {
-                answer = requestHandler.getAnswer(request, curSession);
-            } else {
-                sendButtonMessage(update.getMessage().getChatId(), curSession.getInfoHolder());
-                answer = new LinkedList<>();
-                answer.add("");
-                curSession.setBlocked(false);
-            }
+//            if (!request.equals("/rs")) {
+            answer = requestHandler.getAnswer(request, curSession);
+//            } else {
+//                sendButtonMessage(update.getMessage().getChatId(), curSession.getInfoHolder());
+//                answer = new LinkedList<>();
+//                sendMessage.setText("");
+//                answer.add(sendMessage);
+//                curSession.setBlocked(false);
+//            }
         }
 
         if (update.getMessage().hasLocation()) {
@@ -70,20 +73,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     // Затем это сообщение должно отсылаться телеграмом просто как поток байт, который ничего не знает о бизнес логике
 
 
-
-
-
-
-
-
-
-
-
     private void sendButtonMessage(Long chatId, InfoHolder infoHolder) {
         Session curSession = sessionHolder.get(String.valueOf(chatId));
         List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
 
-        if (lastStation.size() == 0 ){
+        if (lastStation.size() == 0) {
             SendMessage message = new SendMessage();
             message.setChatId(chatId);
             message.setText("Вы не ввели ни одной станции");
@@ -93,8 +87,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
 //            curSession.setBlocked(false);
-        }
-        else {
+        } else {
 
             SendMessage message = new SendMessage();
             message.setChatId(chatId);
@@ -140,14 +133,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessageQueueString(String chatId, Queue<String> messageQueue) {
+    public void sendMessageQueueString(String chatId, Queue<SendMessage> messageQueue) {
         if (messageQueue == null)
             return;
 
-
         while (!messageQueue.isEmpty()) {
-            String answer = messageQueue.remove();
-            SendMessage sendMessage = new SendMessage(chatId, answer);
+//            String answer = messageQueue.remove();
+
+            SendMessage sendMessage = messageQueue.remove();
+            sendMessage.setChatId(chatId);
+
+//            String answer = messageQueue.remove().getText();
+            if (sendMessage.getText() == null)
+                continue;
+//            sendMessage.setChatId(chatId);
+//            sendMessage.setText(answer);
             try {
                 execute(sendMessage);
             } catch (TelegramApiException ignored) {
