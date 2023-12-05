@@ -67,6 +67,9 @@ class APIMethodsTest {
             InfoCarrier sheduleBetStation = apiYandex.getInfoCarrier(paramBuilder);});
     }
 
+
+
+
 //    @Test
 //    void getAllowStationsList() {
 //        ParamBuilder paramBuilder = new ParamBuilder();
@@ -74,4 +77,10 @@ class APIMethodsTest {
 //            APIYandex apiYandex = new APIYandex("");
 //            StationList sheduleBetStation = apiYandex.getAllowStationsList(paramBuilder);});
 //    }
+
+    // 1) Тестируем весь код вместо БД SQLite
+    // Prepared statement
+    //
 }
+
+

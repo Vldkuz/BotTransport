@@ -19,7 +19,6 @@ import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class ParamAPI {
 
@@ -55,12 +54,12 @@ public class ParamAPI {
     StringBuilder firstStr = new StringBuilder();
     // Здесь нужно добавить просто шаблон, куда будет все подставляться из объекта api
 
-    firstStr.append("тип станции:\t" + shedule.getStation().getStationTypeName());
+    firstStr.append("Тип станции:\t" + shedule.getStation().getStationTypeName());
     firstStr.append("\n");
-    firstStr.append("название станции:\t" + shedule.getStation().getTitle());
+    firstStr.append("Название станции:\t" + shedule.getStation().getTitle());
     firstStr.append("\n");
     firstStr.append(
-        "тип транспорта:\t" + shedule.getStation().getTransportType() + "\n" + "\n");
+        "Тип транспорта:\t" + shedule.getStation().getTransportType() + "\n" + "\n");
 
     sendMessage.setText(firstStr.toString());
     answer.add(sendMessage);
@@ -82,17 +81,8 @@ public class ParamAPI {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-  public static void getShedule(Session session, Queue<SendMessage> answer) throws HTTPClientException,ParserException,ValidationException {
+  public static void getShedule(Session session, Queue<SendMessage> answer)
+      throws HTTPClientException, ParserException, ValidationException {
     SendMessage sendMessage = new SendMessage();
     APIYandex api = session.getApiUser();
 
@@ -100,59 +90,57 @@ public class ParamAPI {
     params.setTo(session.getInfoHolder().getLastDestination());
     params.setFrom(session.getInfoHolder().getLastSource());
 
-      SheduleBetStation shedule = api.getShedule(params);
-      // Парсинг объекта shedule Ceмен :)
-      // Понял тебя Владислав ☺
-      StringBuilder startPart = new StringBuilder("");
-      startPart.append(
-          shedule.getSearch().getFrom().getTitle() + "(" + shedule.getSearch().getFrom().getCode()
-              +
-              ")" + "\n\t->\n" + shedule.getSearch().getTo().getTitle() + "("
-              + shedule.getSearch().getTo().getCode() + ")");
+    SheduleBetStation shedule = api.getShedule(params);
+    // Парсинг объекта shedule Ceмен :)
+    // Понял тебя Владислав ☺
+    StringBuilder startPart = new StringBuilder("");
+    startPart.append(
+        shedule.getSearch().getFrom().getTitle() + "(" + shedule.getSearch().getFrom().getCode()
+            +
+            ")" + "\n\t->\n" + shedule.getSearch().getTo().getTitle() + "("
+            + shedule.getSearch().getTo().getCode() + ")");
 
-      sendMessage.setText(String.valueOf(startPart));
+    sendMessage.setText(String.valueOf(startPart));
+    answer.add(sendMessage);
+
+    for (int i = 0; i < shedule.getSegments().size(); ++i) {
+      sendMessage = new SendMessage();
+      StringBuilder endPart = new StringBuilder();
+      endPart.append(
+          "Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");
+      endPart.append("Время прибытия: " + shedule.getSegments().get(i).getArrival() + "\n");
+      endPart.append(
+          "Ваш маршрут: " + shedule.getSegments().get(i).getThread().getTitle() + "\n");
+      endPart.append(
+          "Номер маршрута: " + shedule.getSegments().get(i).getThread().getNumber() + "\n");
+      endPart.append(
+          "Тип транспорта " + shedule.getSegments().get(i).getThread().getTransportType()
+              + "\n");
+      endPart.append(
+          "Тип билета и его кашерность " + shedule.getSegments().get(i).getTicketsInfo()
+              .getPlaces().get(0).getName() + "\n" + shedule.getSegments().get(i)
+              .getTicketsInfo()
+              .getPlaces().get(0).getPrice().getWhole() + "\n");
+      sendMessage.setText(endPart.toString());
       answer.add(sendMessage);
-
-      for (int i = 0; i < shedule.getSegments().size(); ++i) {
-        sendMessage = new SendMessage();
-        StringBuilder endPart = new StringBuilder();
-        endPart.append(
-            "Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");
-        endPart.append("Время прибытия: " + shedule.getSegments().get(i).getArrival() + "\n");
-        endPart.append(
-            "Ваш маршрут: " + shedule.getSegments().get(i).getThread().getTitle() + "\n");
-        endPart.append(
-            "Номер маршрута: " + shedule.getSegments().get(i).getThread().getNumber() + "\n");
-        endPart.append(
-            "Тип транспорта " + shedule.getSegments().get(i).getThread().getTransportType()
-                + "\n");
-        endPart.append(
-            "Тип билета и его кашерность " + shedule.getSegments().get(i).getTicketsInfo()
-                .getPlaces().get(0).getName() + "\n" + shedule.getSegments().get(i)
-                .getTicketsInfo()
-                .getPlaces().get(0).getPrice().getWhole() + "\n");
-        sendMessage.setText(endPart.toString());
-        answer.add(sendMessage);
-      }
+    }
   }
 
 
-
   public static void getRecentStations(Session session, Queue<SendMessage> answer) {
-    List<String> lastStation = session.getInfoHolder().getLastStation(session.getInfoHolder().getSizeStationHolder());
-    if (lastStation.size() == 0 ){
+    List<String> lastStation = session.getInfoHolder()
+        .getLastStation(session.getInfoHolder().getSizeStationHolder());
+    if (lastStation.size() == 0) {
       SendMessage message = new SendMessage();
       message.setText("Вы не ввели ни одной станции");
       answer.add(message);
-    }
-    else {
+    } else {
 
       SendMessage message = new SendMessage();
       message.setText("Недавние станции отображены под Вашей строкой");
 
       ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
       message.setReplyMarkup(keyboardMarkup);
-
 
       List<KeyboardRow> keyboard = new ArrayList<>();
 
@@ -175,7 +163,7 @@ public class ParamAPI {
       answer.add(message);
     }
 
-   }
+  }
 
   public static boolean validateStation(String station, Session session) {
     ParamBuilder paramSt = new ParamBuilder();

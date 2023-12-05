@@ -71,7 +71,7 @@ public class SessionUploader extends Thread {
       }
 
       try {
-        Thread.sleep(10);
+        Thread.sleep(1000000);
       } catch (InterruptedException e) {
         uploadALLtoDatabase();
       }
@@ -85,7 +85,7 @@ public class SessionUploader extends Thread {
       Session curSession = activeSessionHolder.get(chatId);
 
       while (curSession.getBlocked()) {
-        try {Thread.sleep(10);} catch (InterruptedException ignored) {Thread.currentThread().interrupt();}
+        try {Thread.sleep(100000);} catch (InterruptedException ignored) {Thread.currentThread().interrupt();}
       }
 
       return activeSessionHolder.remove(chatId);
