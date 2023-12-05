@@ -4,6 +4,7 @@ public enum State {
   start,
   waitSource,
   waitDestination,
+  waitRecentStations,
   waitSheduleStation,
   waitFollowList,
   waitNearStations,

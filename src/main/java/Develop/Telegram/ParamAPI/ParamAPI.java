@@ -10,8 +10,16 @@ import Develop.API.APIServices.ParamBuilder;
 import Develop.API.APIYandex;
 import Develop.Telegram.UserHolder.Session;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
+
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Location;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class ParamAPI {
 
@@ -35,13 +43,16 @@ public class ParamAPI {
     return "";
   }
 
-  public static void getSheduleStation(String request, Session session, Queue<String> answer)
+  public static void getSheduleStation(String request, Session session, Queue<SendMessage> answer)
       throws ParserException, ValidationException, HTTPClientException {
+    session.getInfoHolder().pushStation(request);
+    SendMessage sendMessage = new SendMessage();
+
     ParamBuilder param = new ParamBuilder();
     param.setStation(request);
 
     SheduleStation shedule = session.getApiUser().getSheduleStation(param);
-    StringBuilder firstStr = new StringBuilder("");
+    StringBuilder firstStr = new StringBuilder();
     // Здесь нужно добавить просто шаблон, куда будет все подставляться из объекта api
 
     firstStr.append("тип станции:\t" + shedule.getStation().getStationTypeName());
@@ -51,9 +62,11 @@ public class ParamAPI {
     firstStr.append(
         "тип транспорта:\t" + shedule.getStation().getTransportType() + "\n" + "\n");
 
-    answer.add(firstStr.toString());
+    sendMessage.setText(firstStr.toString());
+    answer.add(sendMessage);
 
     for (int i = 0; i < shedule.getSchedule().size(); ++i) {
+      sendMessage = new SendMessage();
       StringBuilder ansPart = new StringBuilder();
       ansPart.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle() + "\n");
       ansPart.append(
@@ -62,19 +75,31 @@ public class ParamAPI {
       ansPart.append("время отправления:\t" + shedule.getSchedule().get(i).getDays() + "\n");
       ansPart.append("\n\n");
 
-      answer.add(ansPart.toString());
+      sendMessage.setText(ansPart.toString());
+      answer.add(sendMessage);
     }
     session.getInfoHolder().pushStation(request);
   }
 
-  public static void getShedule(Session session, Queue<String> answer) {
+
+
+
+
+
+
+
+
+
+
+
+  public static void getShedule(Session session, Queue<SendMessage> answer) throws HTTPClientException,ParserException,ValidationException {
+    SendMessage sendMessage = new SendMessage();
     APIYandex api = session.getApiUser();
 
     ParamBuilder params = new ParamBuilder();
     params.setTo(session.getInfoHolder().getLastDestination());
     params.setFrom(session.getInfoHolder().getLastSource());
 
-    try {
       SheduleBetStation shedule = api.getShedule(params);
       // Парсинг объекта shedule Ceмен :)
       // Понял тебя Владислав ☺
@@ -85,9 +110,11 @@ public class ParamAPI {
               ")" + "\n\t->\n" + shedule.getSearch().getTo().getTitle() + "("
               + shedule.getSearch().getTo().getCode() + ")");
 
-      answer.add(String.valueOf(startPart));
+      sendMessage.setText(String.valueOf(startPart));
+      answer.add(sendMessage);
 
       for (int i = 0; i < shedule.getSegments().size(); ++i) {
+        sendMessage = new SendMessage();
         StringBuilder endPart = new StringBuilder();
         endPart.append(
             "Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");
@@ -104,17 +131,51 @@ public class ParamAPI {
                 .getPlaces().get(0).getName() + "\n" + shedule.getSegments().get(i)
                 .getTicketsInfo()
                 .getPlaces().get(0).getPrice().getWhole() + "\n");
+        sendMessage.setText(endPart.toString());
+        answer.add(sendMessage);
+      }
+  }
+
+
+
+  public static void getRecentStations(Session session, Queue<SendMessage> answer) {
+    List<String> lastStation = session.getInfoHolder().getLastStation(session.getInfoHolder().getSizeStationHolder());
+    if (lastStation.size() == 0 ){
+      SendMessage message = new SendMessage();
+      message.setText("Вы не ввели ни одной станции");
+      answer.add(message);
+    }
+    else {
+
+      SendMessage message = new SendMessage();
+      message.setText("Недавние станции отображены под Вашей строкой");
+
+      ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+      message.setReplyMarkup(keyboardMarkup);
+
+
+      List<KeyboardRow> keyboard = new ArrayList<>();
+
+      for (int i = 0; i < lastStation.size(); i++) {
+        KeyboardRow row = new KeyboardRow();
+
+        KeyboardButton button = new KeyboardButton();
+        button.setText(lastStation.get(i));
+
+        row.add(button);
+
+        keyboard.add(row);
       }
 
+      keyboardMarkup.setKeyboard(keyboard);
 
-    } catch (HTTPClientException e) {
-      answer.add("Произошла ошибка клиента");
-    } catch (ParserException e) {
-      answer.add("Произошла ошибка парсера");
-    } catch (ValidationException e) {
-      answer.add("Произошла ошибка валидации");
+      // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
+      keyboardMarkup.setOneTimeKeyboard(true);
+//            curSession.setBlocked(false);
+      answer.add(message);
     }
-  }
+
+   }
 
   public static boolean validateStation(String station, Session session) {
     ParamBuilder paramSt = new ParamBuilder();

@@ -37,6 +37,7 @@ public class InfoHolder {
     return list;
   }
 
+  public int getSizeStationHolder() {return this.stationHolder.size();}
   public String getLastSource() {
     return lastSource;
   }
