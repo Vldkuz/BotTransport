@@ -46,15 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if (update.getMessage().hasText()) {
             String request = update.getMessage().getText();
-//            if (!request.equals("/rs")) {
             answer = requestHandler.getAnswer(request, curSession);
-//            } else {
-//                sendButtonMessage(update.getMessage().getChatId(), curSession.getInfoHolder());
-//                answer = new LinkedList<>();
-//                sendMessage.setText("");
-//                answer.add(sendMessage);
-//                curSession.setBlocked(false);
-//            }
         }
 
         if (update.getMessage().hasLocation()) {
@@ -71,83 +63,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     // Сколько может быть состояний у пользователя ?
     // В зависимости от состояния пользователя вызывается функция с API и происходит парсинг объекта и ответ при помощи бизнес логики
     // Затем это сообщение должно отсылаться телеграмом просто как поток байт, который ничего не знает о бизнес логике
-
-
-    private void sendButtonMessage(Long chatId, InfoHolder infoHolder) {
-        Session curSession = sessionHolder.get(String.valueOf(chatId));
-        List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
-
-        if (lastStation.size() == 0) {
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Вы не ввели ни одной станции");
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-//            curSession.setBlocked(false);
-        } else {
-
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Недавние станции отображены под Вашей строкой");
-
-            // Создаем клавиатуру
-            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-            message.setReplyMarkup(keyboardMarkup);
-
-//        Session curSession = sessionHolder.get(String.valueOf(chatId));
-            // Создаем список строк клавиатуры
-
-
-            List<KeyboardRow> keyboard = new ArrayList<>();
-//            List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
-
-            for (int i = 0; i < lastStation.size(); i++) {
-                // Создаем строку клавиатуры
-                KeyboardRow row = new KeyboardRow();
-
-                // Создаем кнопку
-                KeyboardButton button = new KeyboardButton();
-                button.setText(lastStation.get(i));
-
-                // Добавляем кнопку в строку
-                row.add(button);
-
-                // Добавляем строку в список
-                keyboard.add(row);
-            }
-
-            // Привязываем список к клавиатуре
-            keyboardMarkup.setKeyboard(keyboard);
-
-            // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
-            keyboardMarkup.setOneTimeKeyboard(true);
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-//            curSession.setBlocked(false);
-        }
-    }
-
     public void sendMessageQueueString(String chatId, Queue<SendMessage> messageQueue) {
         if (messageQueue == null)
             return;
 
         while (!messageQueue.isEmpty()) {
-//            String answer = messageQueue.remove();
-
             SendMessage sendMessage = messageQueue.remove();
             sendMessage.setChatId(chatId);
-
-//            String answer = messageQueue.remove().getText();
             if (sendMessage.getText() == null)
                 continue;
-//            sendMessage.setChatId(chatId);
-//            sendMessage.setText(answer);
             try {
                 execute(sendMessage);
             } catch (TelegramApiException ignored) {
@@ -155,40 +79,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 }
-
-
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(chatId);
-//        sendMessage.setText("Недавние станции");
-//
-//        InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
-//        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-//        List<InlineKeyboardButton> rowInLine = new ArrayList<>();
-//        var codeButton1 = new InlineKeyboardButton();
-//        codeButton1.setText("s9600213");
-//        codeButton1.setCallbackData("s9600213");
-//
-//        var codeButton2 = new InlineKeyboardButton();
-//        codeButton2.setText("s9600212");
-//        codeButton2.setCallbackData("s9600212");
-//
-//        rowInLine.add(codeButton1);
-//        rowInLine.add(codeButton2);
-//
-//        rowsInLine.add(rowInLine);
-//
-//        markupInLine.setKeyboard(rowsInLine);
-//        sendMessage.setReplyMarkup(markupInLine);
-//        try {
-//          execute(sendMessage);
-//        } catch (TelegramApiException ignored) {
-//        }
-//
-//      }
-
-
-
-
 
 
 

@@ -65,8 +65,8 @@ public class ParamAPI {
     sendMessage.setText(firstStr.toString());
     answer.add(sendMessage);
 
-    for (int i = 0; i < 3/*shedule.getSchedule().size()*/; ++i) {
-      SendMessage sendMessage2 = new SendMessage();
+    for (int i = 0; i < shedule.getSchedule().size(); ++i) {
+      sendMessage = new SendMessage();
       StringBuilder ansPart = new StringBuilder();
       ansPart.append("рейс\t" + shedule.getSchedule().get(i).getThread().getTitle() + "\n");
       ansPart.append(
@@ -75,8 +75,8 @@ public class ParamAPI {
       ansPart.append("время отправления:\t" + shedule.getSchedule().get(i).getDays() + "\n");
       ansPart.append("\n\n");
 
-      sendMessage2.setText(ansPart.toString());
-      answer.add(sendMessage2);
+      sendMessage.setText(ansPart.toString());
+      answer.add(sendMessage);
     }
     session.getInfoHolder().pushStation(request);
   }
@@ -92,7 +92,7 @@ public class ParamAPI {
 
 
 
-  public static void getShedule(Session session, Queue<SendMessage> answer) {
+  public static void getShedule(Session session, Queue<SendMessage> answer) throws HTTPClientException,ParserException,ValidationException {
     SendMessage sendMessage = new SendMessage();
     APIYandex api = session.getApiUser();
 
@@ -100,7 +100,6 @@ public class ParamAPI {
     params.setTo(session.getInfoHolder().getLastDestination());
     params.setFrom(session.getInfoHolder().getLastSource());
 
-    try {
       SheduleBetStation shedule = api.getShedule(params);
       // Парсинг объекта shedule Ceмен :)
       // Понял тебя Владислав ☺
@@ -114,8 +113,8 @@ public class ParamAPI {
       sendMessage.setText(String.valueOf(startPart));
       answer.add(sendMessage);
 
-      for (int i = 0; i < 3/*shedule.getSegments().size()*/; ++i) {
-        SendMessage sendMessage2 = new SendMessage();
+      for (int i = 0; i < shedule.getSegments().size(); ++i) {
+        sendMessage = new SendMessage();
         StringBuilder endPart = new StringBuilder();
         endPart.append(
             "Время отправления: " + shedule.getSegments().get(i).getDeparture() + "\n");
@@ -132,24 +131,9 @@ public class ParamAPI {
                 .getPlaces().get(0).getName() + "\n" + shedule.getSegments().get(i)
                 .getTicketsInfo()
                 .getPlaces().get(0).getPrice().getWhole() + "\n");
-        sendMessage2.setText(endPart.toString());
-        answer.add(sendMessage2);
+        sendMessage.setText(endPart.toString());
+        answer.add(sendMessage);
       }
-
-
-    } catch (HTTPClientException e) {
-//      answer.add("Произошла ошибка клиента");
-      sendMessage.setText(String.valueOf("Произошла ошибка клиента"));
-      answer.add(sendMessage);
-    } catch (ParserException e) {
-//      answer.add("Произошла ошибка парсера");
-      sendMessage.setText(String.valueOf("Произошла ошибка парсера"));
-      answer.add(sendMessage);
-    } catch (ValidationException e) {
-//      answer.add("Произошла ошибка валидации");
-      sendMessage.setText(String.valueOf("Произошла ошибка валидации"));
-      answer.add(sendMessage);
-    }
   }
 
 
@@ -160,40 +144,29 @@ public class ParamAPI {
       SendMessage message = new SendMessage();
       message.setText("Вы не ввели ни одной станции");
       answer.add(message);
-//            curSession.setBlocked(false);
     }
     else {
 
       SendMessage message = new SendMessage();
       message.setText("Недавние станции отображены под Вашей строкой");
 
-      // Создаем клавиатуру
       ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
       message.setReplyMarkup(keyboardMarkup);
 
-//        Session curSession = sessionHolder.get(String.valueOf(chatId));
-      // Создаем список строк клавиатуры
-
 
       List<KeyboardRow> keyboard = new ArrayList<>();
-//            List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
 
       for (int i = 0; i < lastStation.size(); i++) {
-        // Создаем строку клавиатуры
         KeyboardRow row = new KeyboardRow();
 
-        // Создаем кнопку
         KeyboardButton button = new KeyboardButton();
         button.setText(lastStation.get(i));
 
-        // Добавляем кнопку в строку
         row.add(button);
 
-        // Добавляем строку в список
         keyboard.add(row);
       }
 
-      // Привязываем список к клавиатуре
       keyboardMarkup.setKeyboard(keyboard);
 
       // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
@@ -215,58 +188,3 @@ public class ParamAPI {
     return true;
   }
 }
-
-
-
-
-
-
-
-
-
-/*
-List<String> lastStation = session.getInfoHolder().getLastStation(session.getInfoHolder().getSizeStationHolder());
-    if (lastStation.size() == 0 ){
-      SendMessage message = new SendMessage();
-      message.setText("Вы не ввели ни одной станции");
-//            curSession.setBlocked(false);
-    }
-    else {
-
-      SendMessage message = new SendMessage();
-      message.setText("Недавние станции отображены под Вашей строкой");
-
-      // Создаем клавиатуру
-      ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-      message.setReplyMarkup(keyboardMarkup);
-
-//        Session curSession = sessionHolder.get(String.valueOf(chatId));
-      // Создаем список строк клавиатуры
-
-
-      List<KeyboardRow> keyboard = new ArrayList<>();
-//            List<String> lastStation = curSession.getInfoHolder().getLastStation(infoHolder.getSizeStationHolder());
-
-      for (int i = 0; i < lastStation.size(); i++) {
-        // Создаем строку клавиатуры
-        KeyboardRow row = new KeyboardRow();
-
-        // Создаем кнопку
-        KeyboardButton button = new KeyboardButton();
-        button.setText(lastStation.get(i));
-
-        // Добавляем кнопку в строку
-        row.add(button);
-
-        // Добавляем строку в список
-        keyboard.add(row);
-      }
-
-      // Привязываем список к клавиатуре
-      keyboardMarkup.setKeyboard(keyboard);
-
-      // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
-      keyboardMarkup.setOneTimeKeyboard(true);
-//            curSession.setBlocked(false);
-    }
- */

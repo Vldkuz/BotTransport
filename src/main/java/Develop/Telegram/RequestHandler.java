@@ -8,7 +8,6 @@ import Develop.Telegram.UserHolder.Session;
 import Develop.Telegram.UserHolder.State;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -53,7 +52,15 @@ public class RequestHandler {
         session.getInfoHolder().pushStation(station);
         session.setState(State.start);
 
-        ParamAPI.getShedule(session, response);
+        try {
+          ParamAPI.getShedule(session, response);
+        } catch (HTTPClientException e){
+          sendMessage.setText("Произошла ошибка клиента");
+        } catch (ParserException e) {
+          sendMessage.setText("Произошла ошибка парсера");
+        } catch (ValidationException e) {
+          sendMessage.setText("Произошла ошибка валидации");
+        }
       }
     }
     response.add(sendMessage);
@@ -63,7 +70,6 @@ public class RequestHandler {
 
   private void handleRequestText(String request, State state, Queue<SendMessage> response) {
     SendMessage sendMessage =  new SendMessage();
-
     switch (state) {
 
       case start -> {
@@ -81,11 +87,8 @@ public class RequestHandler {
               sendMessage.setText("Введите вашу ширину, долготу, радиус поиска станции:");
           case waitRecentStations ->{
           ParamAPI.getRecentStations(session,response);
-//          String h = response.remove().getText();
-//            response.remove().getReplyMarkup().getClass().
           session.setState(State.start);}
         }
-//        response.add(sendMessage);
       }
 
       case waitSheduleStation -> {
@@ -141,7 +144,15 @@ public class RequestHandler {
           return;
         }
 
-        ParamAPI.getShedule(session, response);
+        try {
+          ParamAPI.getShedule(session, response);
+        } catch (HTTPClientException e){
+          sendMessage.setText("Произошла ошибка клиента");
+        } catch (ParserException e) {
+          sendMessage.setText("Произошла ошибка парсера");
+        } catch (ValidationException e) {
+          sendMessage.setText("Произошла ошибка валидации");
+        }
       }
 
       case waitCarrier -> {
@@ -155,13 +166,7 @@ public class RequestHandler {
 
       case waitNearStations -> {
       }
-
-//      case waitRecentStations -> {
-//        ParamAPI.getRecentStations(session,response);
-//        session.setState(State.start);
-//      }
     }
-
     response.add(sendMessage);
   }
 
