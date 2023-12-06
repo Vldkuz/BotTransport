@@ -10,10 +10,9 @@ import Develop.API.APIServices.ParamBuilder;
 import Develop.API.APIYandex;
 import Develop.Telegram.UserHolder.Session;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
+import lombok.Data;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -99,6 +98,8 @@ public class ParamAPI {
     ParamBuilder params = new ParamBuilder();
     params.setTo(session.getInfoHolder().getLastDestination());
     params.setFrom(session.getInfoHolder().getLastSource());
+//    params.setDate(java.time.LocalDate.now().toString());
+//    params.setWithTransfers("true");
 
       SheduleBetStation shedule = api.getShedule(params);
       // Парсинг объекта shedule Ceмен :)
@@ -171,7 +172,6 @@ public class ParamAPI {
 
       // Включаем автоматическое скрытие клавиатуры после нажатия кнопки
       keyboardMarkup.setOneTimeKeyboard(true);
-//            curSession.setBlocked(false);
       answer.add(message);
     }
 

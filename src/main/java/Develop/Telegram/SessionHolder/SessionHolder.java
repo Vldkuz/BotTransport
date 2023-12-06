@@ -9,4 +9,5 @@ public class SessionHolder {
     sessionUploader.start();
   }
   public Session get(String chatId) {return sessionUploader.getORremoveAtomic(chatId,false);}
+  public void switchOFFUpload() {sessionUploader.disable();}
 }

@@ -78,7 +78,10 @@ public class RequestHandler {
         switch (session.getState()) {
           case start -> sendMessage.setText("Что-то с командой");
           case waitSheduleStation -> sendMessage.setText("Введите код станции:");
-          case waitSource -> sendMessage.setText("Введите код станции, от который поедете:");
+          case waitSource -> {
+            sendMessage.setText("Введите код станции, от который поедете:");
+
+          }
           case waitCarrier -> sendMessage.setText("Введите код перевозчика:");
           case waitDestination -> sendMessage.setText("Введите код станции, до которой поедете");
           case waitFollowList -> sendMessage.setText("Введите уникальный идентификатор ветки:");
