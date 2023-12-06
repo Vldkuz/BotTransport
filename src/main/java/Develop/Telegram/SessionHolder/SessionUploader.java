@@ -95,13 +95,8 @@ public class SessionUploader extends Thread {
     if (needRemove) {
       Session curSession = activeSessionHolder.get(chatId);
 
-      while (curSession.getBlocked()) {
-        try {
-          Thread.sleep(100000);
-        } catch (InterruptedException ignored) {
-          Thread.currentThread().interrupt();
-        }
-      }
+      if (curSession.getBlocked())
+        return activeSessionHolder.get(chatId);
 
       return activeSessionHolder.remove(chatId);
     }
