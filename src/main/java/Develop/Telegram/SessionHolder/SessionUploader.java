@@ -11,11 +11,23 @@ public class SessionUploader extends Thread {
 
   private boolean needUpload;
   private String APIYandexKey;
+  private String dbName;
+  private String dbUrl;
+  private String dbPort;
+  private String dbUser;
+  private String dbPasswd;
+
   private final ConcurrentHashMap<String, Session> activeSessionHolder = new ConcurrentHashMap<>();
 
-  public SessionUploader(String APIYandexKey) {
+  public SessionUploader(String APIYandexKey, String dbName, String dbUrl, String dbPort,
+      String dbUser, String dbPasswd) {
     needUpload = true;
     this.APIYandexKey = APIYandexKey;
+    this.dbName = dbName;
+    this.dbUrl = dbUrl;
+    this.dbPort = dbPort;
+    this.dbUser = dbUser;
+    this.dbPasswd = dbPasswd;
   }
 
   public SessionUploader() {
@@ -43,18 +55,17 @@ public class SessionUploader extends Thread {
         Session curSession = entry.getValue();
         int curDescriptor = curSession.getPriority();
 
-
         if (curDescriptor < minDescriptor) {
           minDescriptor = curDescriptor;
           sessionVictim = entry.getKey();
         }
       }
 
-      if (sessionVictim != null ) {
-        DBConnector dbConnector = new DBConnector("Session");
+      if (sessionVictim != null) {
+        DBConnector dbConnector = new DBConnector(dbName, dbUrl, dbPort, dbUser, dbPasswd);
         dbConnector.createTableSessions("UserInfo");
 
-        Session sessVict = getORremoveAtomic(sessionVictim,true);
+        Session sessVict = getORremoveAtomic(sessionVictim, true);
 
         boolean isInDB = false;
         try {
@@ -85,7 +96,11 @@ public class SessionUploader extends Thread {
       Session curSession = activeSessionHolder.get(chatId);
 
       while (curSession.getBlocked()) {
-        try {Thread.sleep(10);} catch (InterruptedException ignored) {Thread.currentThread().interrupt();}
+        try {
+          Thread.sleep(100000);
+        } catch (InterruptedException ignored) {
+          Thread.currentThread().interrupt();
+        }
       }
 
       return activeSessionHolder.remove(chatId);
@@ -97,7 +112,7 @@ public class SessionUploader extends Thread {
       curSession = activeSessionHolder.get(chatId);
       curSession.addPriority();
     } else {
-      DBConnector dbConnector = new DBConnector("Session");
+      DBConnector dbConnector = new DBConnector(dbName, dbUrl, dbPort, dbUser, dbPasswd);
       dbConnector.createTableSessions("UserInfo");
 
       boolean ans = false;
@@ -113,8 +128,9 @@ public class SessionUploader extends Thread {
       }
     }
 
-    if (curSession != null)
+    if (curSession != null) {
       return curSession;
+    }
 
     curSession = new Session(APIYandexKey);
     activeSessionHolder.put(chatId, curSession);
