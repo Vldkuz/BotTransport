@@ -1,5 +1,4 @@
 
-
 import Develop.API.APIExceptions.ValidationException;
 import Develop.API.APIObj.FollowStations.FollowStations;
 import Develop.API.APIObj.InfoCarrier.InfoCarrier;
@@ -13,6 +12,10 @@ import Develop.Telegram.RequestHandler;
 import Develop.Telegram.SessionHolder.SessionHolder;
 import Develop.Telegram.UserHolder.InfoHolder;
 import Develop.Telegram.UserHolder.Session;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -97,7 +100,11 @@ class DatabaseTest {
         .withDatabaseName(dbName)
         .withUsername(dbUser)
         .withPassword(dbPasswd)
-        .withExposedPorts(dbPort);
+        .withExposedPorts(dbPort)
+        .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(
+        new HostConfig().withPortBindings(new PortBinding(Ports.Binding.bindPort(dbPort), new ExposedPort(dbPort)))));
+
+
     @Test
     public void testDatabase()
     {
