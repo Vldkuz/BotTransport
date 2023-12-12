@@ -37,6 +37,11 @@ public class InfoHolder {
     return list;
   }
 
+  public LinkedList<String> getStationList()
+  {
+    return stationHolder;
+  }
+
   public int getSizeStationHolder() {return this.stationHolder.size();}
   public String getLastSource() {
     return lastSource;

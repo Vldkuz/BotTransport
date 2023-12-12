@@ -13,18 +13,21 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.Null;
 import org.apache.http.HttpStatus;
 
 public class APIConnector {
 
   public APIConnector(String key) throws ValidationException {
-    try {APIKey = key;getInputStream("https://api.rasp.yandex.net/v3.0/copyright/?", Duration.ofMinutes(1));}
 
-    catch (HTTPClientException e) {
+    if (key.isEmpty()) {
       FieldHolder errorKey = new FieldHolder("APIKey", key);
       List<FieldHolder> holdersField = new ArrayList<>();
       holdersField.add(errorKey);
-      throw new ValidationException("Ошибка валидации ключа", holdersField);}
+      throw new ValidationException("Ошибка валидации ключа", holdersField);
+    }
+
+    APIKey = key;
   }
 
   public InputStream getInputStream(String request, Duration time) throws HTTPClientException {
@@ -32,8 +35,9 @@ public class APIConnector {
     HttpRequest httpReq = HttpRequest.newBuilder(URI.create(request))
         .headers("Authorization", APIKey).build();
 
-    if (APIKey.isEmpty())
+    if (APIKey.isEmpty()) {
       throw new HTTPClientException("Поле ключа пустое");
+    }
 
     HttpResponse<InputStream> response;
 

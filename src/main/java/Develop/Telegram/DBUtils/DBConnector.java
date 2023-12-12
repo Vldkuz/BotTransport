@@ -13,12 +13,12 @@ public class DBConnector {
 
   public Connection connectDB;
 
-  public DBConnector(String dbName) {
+  public DBConnector(String dbName, String datadaseURL, String portDatabase, String userDB, String userPasswd) {
     try {
       Class.forName("org.postgresql.Driver");
-      connectDB = DriverManager.getConnection(
-              "jdbc:postgresql://" + System.getenv("DATABASE_URL") + ":" + System.getenv("PORT_DB")
-                      + "/" + dbName, System.getenv("USER_DB"), System.getenv("USER_PASSWD"));
+      String connection = String.format("jdbc:postgresql://%s:%s/%s",datadaseURL,portDatabase,dbName);
+
+      connectDB = DriverManager.getConnection(connection, userDB,userPasswd);
       if (connectDB == null) {
         System.err.println("Не удалось подключится к БД");
       }
