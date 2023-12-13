@@ -59,5 +59,4 @@ public class InfoHolder {
     this.lastDestination = lastDestination;
   }
 
-  // Вся информация по пользователю, включая топингу
 }
