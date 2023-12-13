@@ -48,12 +48,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     sendMessageQueueString(chatId, answer);
   }
-
-  // При каждом присланном сообщение бот заходит в OnUpdateRecieved
-  // Получает chat id пользователя и смотрит на состояние в котором находится пользователь
-  // Сколько может быть состояний у пользователя ?
-  // В зависимости от состояния пользователя вызывается функция с API и происходит парсинг объекта и ответ при помощи бизнес логики
-  // Затем это сообщение должно отсылаться телеграмом просто как поток байт, который ничего не знает о бизнес логике
   public void sendMessageQueueString(String chatId, Queue<SendMessage> messageQueue) {
       if (messageQueue == null) {
           return;

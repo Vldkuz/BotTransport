@@ -43,33 +43,6 @@ public class DatabaseTest {
     @Test
     public static void pushStation()
     {
-//        Session templateSession = new Session(keyYandex);
-//        InfoHolder template  = templateSession.getInfoHolder();
-//        template.pushStation("s9600213");
-//        template.pushStation("s9600212");
-//        template.setLastSource("s9600213");
-//        template.setLastDestination("s9600212");
-//
-//
-//        Session curSession = sessionHolder.get(chatId);
-//        RequestHandler requestHandler = new RequestHandler(curSession);
-//
-//
-//        // Вот здесь тестовые методы дергай только со станциями
-//
-//        curSession = sessionHolder.get(chatId);
-//
-//        assertEquals(template.getLastSource(), curSession.getInfoHolder().getLastSource());
-//        assertEquals(template.getLastDestination(), curSession.getInfoHolder().getLastDфestination());
-//        assertEquals(templateSession.getState(), curSession.getState());
-//
-//        String[] templateStationList = template.getStationList().toArray(String[]::new);
-//        String[] curStationList = template.getStationList().toArray(String[]::new);
-//
-//        assertArrayEquals(templateStationList, curStationList);
-//        // Здесь я должен проверить, состояние сессии в бд
-
-
         Session templateSession = new Session(keyYandex);
         InfoHolder template  = templateSession.getInfoHolder();
         template.pushStation("s9600213");
@@ -77,8 +50,6 @@ public class DatabaseTest {
         Session curSession = sessionHolder.get(chatId);
         curSession.getInfoHolder().pushStation("s9600213");
         curSession.setBlocked(false);
-        // Вот здесь тестовые методы дергай только со станциями
-
         try {
             Thread.currentThread().sleep(100);
         } catch (InterruptedException e) {}
@@ -90,11 +61,7 @@ public class DatabaseTest {
 
         if (templateStationList.equals(curStationList))
             throw new IllegalStateException();
-
-        // Здесь я должен проверить, состояние сессии в бд
     }
-
-
     @Test
     public static void lastDestination() throws IllegalStateException {
         Session templateSession = new Session(keyYandex);
@@ -147,7 +114,7 @@ public class DatabaseTest {
     {
         Session templateSession = new Session(keyYandex);
         InfoHolder template  = templateSession.getInfoHolder();
-        template.setName("Панэ Пык_МЫКола"); //который свой домен в ru засуваф фыфыф
+        template.setName("Панэ Пык_МЫКола");
 
         Session curSession = sessionHolder.get(chatId);
         curSession.getInfoHolder().setName("Панэ Пык_МЫКола");
@@ -165,6 +132,4 @@ public class DatabaseTest {
         if (!templateStationList.equals(curStationList))
             throw new IllegalStateException();
     }
-
-
 }
