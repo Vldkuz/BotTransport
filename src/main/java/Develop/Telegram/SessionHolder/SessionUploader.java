@@ -45,12 +45,9 @@ public class SessionUploader extends Thread {
   @Override
   public void run() {
     while (needUpload) {
-      // Получим список всех ключей
-
       String sessionVictim = null;
 
-      int minDescriptor = Integer.MAX_VALUE; // Будем искать минимум, а при запросе прибавлять к приоритету ;
-
+      int minDescriptor = Integer.MAX_VALUE;
       for (Map.Entry<String, Session> entry : activeSessionHolder.entrySet()) {
         Session curSession = entry.getValue();
         int curDescriptor = curSession.getPriority();
@@ -133,6 +130,5 @@ public class SessionUploader extends Thread {
   }
 
   public void uploadALLtoDatabase() {
-    // Выгрузка всего в бд, если что-то пошло не так, то поток экстренно будится
   }
 }
