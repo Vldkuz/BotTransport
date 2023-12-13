@@ -18,7 +18,6 @@ public class Session {
       this.api = new APIYandex(keyPointer);
     } catch (ValidationException e) {
       throw new RuntimeException("Ошибка в API ключе Яндекс");
-      // При таком случае у нас недействительный API ключ в ресурсах, что говорит о том, что все функции программы недействительны
     }
   }
 
